@@ -66,6 +66,10 @@
         background-repeat: none;
     }
 */
+@import "bga-cards/scss/_cards.scss";
+
+$card-width: 165px;
+$card-height: 257px;
 
 @mixin selectable {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
@@ -81,4 +85,91 @@
 
 @mixin invalid {
     outline: 4px rgba(255, 0, 0, 0.75) solid !important;
+}
+
+@mixin quibbles-card-sprites($type, $max) {
+    @for $i from 1 through $max {
+        &.quibbles-card-#{$type}-#{$i} {
+            .bga-card-front {
+                height: $card-height;
+                width: $card-width;
+                background-position: #{(100%/($max - 1)*($i - 1))} 0;
+                background-image: url("img/cards_#{$type}.png");
+            }
+            .bga-card-front {
+                height: $card-height;
+                width: $card-width;
+            }
+        }
+    }
+}
+
+.quibbles {
+    .quibbles-card {
+        height: $card-height;
+        width: $card-width;
+
+        .bga-card-inner {
+            border-radius: 12px;
+        }
+
+        .bga-card-front, .bga-card-back {
+            height: $card-height;
+            width: $card-width;
+            border-radius: 12px;
+        }
+
+        @include quibbles-card-sprites(1, 16);
+        @include quibbles-card-sprites(2, 18);
+        @include quibbles-card-sprites(3, 20);
+        @include quibbles-card-sprites(4, 22);
+        @include quibbles-card-sprites(5, 24);
+        @include quibbles-card-sprites(6, 26);
+    }
+
+    .deck {
+        height: $card-height;
+        width: $card-width;
+    }
+
+    .row-1, .row-2, .row-3 {
+        display: flex;
+        gap: 20px;
+    }
+
+    .row-1 {
+        #player-area-top {
+            background-color: blue;
+            flex-grow: 1;
+        }
+
+        #card-deck, #card-discard {
+            background-color: red;
+            width: $card-width;
+        }
+    }
+
+    .row-2 {
+        #card-display {
+            background-color: greenyellow;
+            flex-grow: 1;
+        }
+
+        #player-area-left, #player-area-right {
+            background-color: blue;
+            width: $card-width;
+        }
+    }
+
+    .row-3 {
+        #player-area-bottom {
+            background-color: blue;
+            flex-grow: 1;
+        }
+
+        .spacer {
+            background-color: red;
+            width: $card-width;
+        }
+    }
 }

@@ -1,0 +1,20 @@
+{
+  "rootDir": ".",
+  "compilerOptions": {
+    "target": "es5",
+    "module": "none",
+    "lib": ["dom", "esnext"],
+    "sourceMap": false,
+    "outFile": "quibbles.js",
+  },
+  "files": [
+    "src/bga/Framework.d.ts",
+    "src/bga/Counter.d.ts",
+    "src/bga/Define.ts",
+
+    "src/bga-cards/CardManager.ts",
+
+    "src/quibbles.d.ts",
+    "src/quibbles.ts"
+  ]
+}

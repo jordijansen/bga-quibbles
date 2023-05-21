@@ -24,9 +24,26 @@
     
     Please REMOVE this comment before publishing your game on BGA
 -->
+<div class="quibbles">
+    <div id="player-hand" class="whiteblock">
 
-
-This is your game interface. You can edit this HTML in your ".tpl" file.
+    </div>
+    <div class="row-1">
+        <div id="card-deck" class="whiteblock">deck</div>
+        <div id="player-area-top" class="whiteblock">player-top</div>
+        <div id="card-discard" class="whiteblock">discard</div>
+    </div>
+    <div class="row-2">
+        <div id="player-area-left" class="whiteblock">player-left</div>
+        <div id="card-display" class="whiteblock"></div>
+        <div id="player-area-right" class="whiteblock">player-right</div>
+    </div>
+    <div class="row-3">
+        <div class="spacer whiteblock"></div>
+        <div id="player-area-bottom" class="whiteblock">player-bottom</div>
+        <div class="spacer whiteblock" ></div>
+    </div>
+</div>
 
 
 <script type="text/javascript">

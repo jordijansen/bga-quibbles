@@ -60,5 +60,1379 @@
         background-repeat: none;
     }
 */
+.bga-card {
+  box-sizing: border-box;
+  background-color: transparent;
+}
+.bga-card .bga-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.6274509804);
+  border-radius: 5px;
+}
+.bga-card:hover .bga-card-inner {
+  transform: rotateY(180deg);
+}
+.bga-card .bga-card-front, .bga-card .bga-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background-size: cover;
+}
+.bga-card .bga-card-back {
+  transform: rotateY(180deg);
+  background-color: grey;
+}
+
+.card-location.horizontal-card-location {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+.card-location.vertical-card-location {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bga-deck {
+  position: relative;
+}
+.bga-deck .bga-card {
+  position: absolute;
+  box-shadow: none;
+}
+.bga-deck .bga-card:nth-child(1) {
+  top: 2px;
+}
+.bga-deck .bga-card:nth-child(2) {
+  top: 4px;
+}
+.bga-deck .bga-card:nth-child(3) {
+  top: 6px;
+}
+.bga-deck .bga-card:nth-child(4) {
+  top: 8px;
+}
+.bga-deck .bga-card:nth-child(5) {
+  top: 10px;
+}
+.bga-deck .bga-card:last-child {
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.6274509804);
+}
+
+.quibbles .quibbles-card {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card .bga-card-inner {
+  border-radius: 12px;
+}
+.quibbles .quibbles-card .bga-card-front, .quibbles .quibbles-card .bga-card-back {
+  height: 257px;
+  width: 165px;
+  border-radius: 12px;
+}
+.quibbles .quibbles-card.quibbles-card-1-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 0% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 6.6666666667% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 13.3333333333% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 20% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 26.6666666667% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 33.3333333333% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 40% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 46.6666666667% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 53.3333333333% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 60% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 66.6666666667% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 73.3333333333% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 80% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 86.6666666667% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 93.3333333333% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-1-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 100% 0;
+  background-image: url("img/cards_1.png");
+}
+.quibbles .quibbles-card.quibbles-card-1-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 0% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 5.8823529412% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 11.7647058824% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 17.6470588235% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 23.5294117647% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 29.4117647059% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 35.2941176471% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 41.1764705882% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 47.0588235294% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 52.9411764706% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 58.8235294118% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 64.7058823529% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 70.5882352941% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 76.4705882353% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 82.3529411765% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 88.2352941176% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 94.1176470588% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-2-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 100% 0;
+  background-image: url("img/cards_2.png");
+}
+.quibbles .quibbles-card.quibbles-card-2-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 0% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 5.2631578947% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 10.5263157895% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 15.7894736842% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 21.0526315789% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 26.3157894737% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 31.5789473684% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 36.8421052632% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 42.1052631579% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 47.3684210526% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 52.6315789474% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 57.8947368421% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 63.1578947368% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 68.4210526316% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 73.6842105263% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 78.9473684211% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 84.2105263158% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 89.4736842105% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 94.7368421053% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-3-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 100% 0;
+  background-image: url("img/cards_3.png");
+}
+.quibbles .quibbles-card.quibbles-card-3-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 0% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 4.7619047619% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 9.5238095238% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 14.2857142857% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 19.0476190476% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 23.8095238095% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 28.5714285714% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 33.3333333333% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 38.0952380952% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 42.8571428571% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 47.619047619% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 52.380952381% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 57.1428571429% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 61.9047619048% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 66.6666666667% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 71.4285714286% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 76.1904761905% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 80.9523809524% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 85.7142857143% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 90.4761904762% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-21 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 95.2380952381% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-21 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-4-22 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 100% 0;
+  background-image: url("img/cards_4.png");
+}
+.quibbles .quibbles-card.quibbles-card-4-22 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 0% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 4.347826087% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 8.6956521739% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 13.0434782609% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 17.3913043478% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 21.7391304348% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 26.0869565217% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 30.4347826087% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 34.7826086957% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 39.1304347826% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 43.4782608696% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 47.8260869565% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 52.1739130435% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 56.5217391304% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 60.8695652174% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 65.2173913043% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 69.5652173913% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 73.9130434783% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 78.2608695652% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 82.6086956522% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-21 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 86.9565217391% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-21 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-22 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 91.3043478261% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-22 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-23 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 95.652173913% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-23 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-5-24 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 100% 0;
+  background-image: url("img/cards_5.png");
+}
+.quibbles .quibbles-card.quibbles-card-5-24 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 0% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-1 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 4% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-2 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 8% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-3 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 12% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-4 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 16% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-5 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 20% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-6 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 24% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-7 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 28% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-8 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 32% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-9 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 36% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-10 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 40% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-11 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 44% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-12 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 48% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-13 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 52% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-14 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 56% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-15 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 60% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-16 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 64% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-17 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 68% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-18 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 72% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-19 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 76% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-20 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-21 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 80% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-21 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-22 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 84% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-22 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-23 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 88% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-23 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-24 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 92% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-24 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-25 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 96% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-25 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .quibbles-card.quibbles-card-6-26 .bga-card-front {
+  height: 257px;
+  width: 165px;
+  background-position: 100% 0;
+  background-image: url("img/cards_6.png");
+}
+.quibbles .quibbles-card.quibbles-card-6-26 .bga-card-front {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .deck {
+  height: 257px;
+  width: 165px;
+}
+.quibbles .row-1, .quibbles .row-2, .quibbles .row-3 {
+  display: flex;
+  gap: 20px;
+}
+.quibbles .row-1 #player-area-top {
+  background-color: blue;
+  flex-grow: 1;
+}
+.quibbles .row-1 #card-deck, .quibbles .row-1 #card-discard {
+  background-color: red;
+  width: 165px;
+}
+.quibbles .row-2 #card-display {
+  background-color: greenyellow;
+  flex-grow: 1;
+}
+.quibbles .row-2 #player-area-left, .quibbles .row-2 #player-area-right {
+  background-color: blue;
+  width: 165px;
+}
+.quibbles .row-3 #player-area-bottom {
+  background-color: blue;
+  flex-grow: 1;
+}
+.quibbles .row-3 .spacer {
+  background-color: red;
+  width: 165px;
+}
 
 /*# sourceMappingURL=quibbles.css.map */

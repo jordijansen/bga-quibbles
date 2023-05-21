@@ -17,12 +17,22 @@
   */
 
 
-require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
+require_once(APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
+require_once('modules/php/framework/Card.php');
+require_once('modules/php/framework/AbstractCardManager.php');
 
-class quibbles extends Table
+require_once('modules/php/CardManager.php');
+require_once('modules/php/StateTrait.php');
+require_once('modules/php/ArgsTrait.php');
+class Quibbles extends Table
 {
-	function __construct( )
+    use StateTrait;
+    use ArgsTrait;
+
+    private CardManager $cardManager;
+
+    function __construct( )
 	{
         // Your global variables labels:
         //  Here, you can assign labels to global variables you are using for this game.
@@ -39,7 +49,9 @@ class quibbles extends Table
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
             //      ...
-        ) );        
+        ) );
+
+        $this->cardManager = new CardManager(self::getNew("module.common.deck"));
 	}
 	
     protected function getGameName( )
@@ -87,7 +99,7 @@ class quibbles extends Table
         //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
         //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
-        // TODO: setup the initial game situation here
+        $this->cardManager->setup();
        
 
         // Activate first player (which is in general a good idea :) )
@@ -117,7 +129,9 @@ class quibbles extends Table
         $result['players'] = self::getCollectionFromDb( $sql );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
-  
+
+        $result['display'] = $this->cardManager->getCardsInLocation(ZONE_DISPLAY);
+
         return $result;
     }
 
