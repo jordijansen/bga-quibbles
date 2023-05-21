@@ -66,7 +66,8 @@
         background-repeat: none;
     }
 */
-@import "bga-cards/scss/_cards.scss";
+@use 'sass:math';
+@import '../node_modules/bga-cards/bga-cards';
 
 $card-width: 165px;
 $card-height: 257px;
@@ -86,90 +87,87 @@ $card-height: 257px;
 @mixin invalid {
     outline: 4px rgba(255, 0, 0, 0.75) solid !important;
 }
-
-@mixin quibbles-card-sprites($type, $max) {
+@mixin quibbles-card-sprites($number, $max) {
     @for $i from 1 through $max {
-        &.quibbles-card-#{$type}-#{$i} {
-            .bga-card-front {
-                height: $card-height;
-                width: $card-width;
-                background-position: #{(100%/($max - 1)*($i - 1))} 0;
-                background-image: url("img/cards_#{$type}.png");
-            }
-            .bga-card-front {
-                height: $card-height;
-                width: $card-width;
-            }
+        .front[data-number="#{$number}"][data-variation="#{$i}"] {
+            background-image: url("img/cards_#{$number}.png");
+            background-position: #{(math.div(100%, ($max - 1))*($i - 1))} 0;
         }
     }
 }
 
+.quibbles-card {
+    display: inline-block;
+    position: relative;
+    width: $card-width;
+    height: $card-height;
+    margin: 5px;
+    border-radius: 12px;
+
+    &.disabled {
+        cursor: not-allowed;
+        filter: contrast(0.6);
+    }
+
+    .card-sides {
+        .card-side {
+            border-radius: 12px;
+
+            &>* {
+                pointer-events: none;
+                user-select: none;
+            }
+
+            &.back {
+                background-image: url("img/back.png");
+                background-position: 0 0;
+            }
+
+            &.front, &.back {
+                background-size: cover;
+            }
+        }
+    }
+
+    @include quibbles-card-sprites(1, 16);
+    @include quibbles-card-sprites(2, 18);
+    @include quibbles-card-sprites(3, 20);
+    @include quibbles-card-sprites(4, 22);
+    @include quibbles-card-sprites(5, 24);
+    @include quibbles-card-sprites(6, 26);
+}
+
 .quibbles {
-    .quibbles-card {
-        height: $card-height;
-        width: $card-width;
 
-        .bga-card-inner {
-            border-radius: 12px;
+    .bga-cards-deck-counter {
+        &.quibbles-counter {
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 25px;
+            background: black;
+            opacity: 0.8;
         }
-
-        .bga-card-front, .bga-card-back {
-            height: $card-height;
-            width: $card-width;
-            border-radius: 12px;
-        }
-
-        @include quibbles-card-sprites(1, 16);
-        @include quibbles-card-sprites(2, 18);
-        @include quibbles-card-sprites(3, 20);
-        @include quibbles-card-sprites(4, 22);
-        @include quibbles-card-sprites(5, 24);
-        @include quibbles-card-sprites(6, 26);
     }
 
-    .deck {
-        height: $card-height;
-        width: $card-width;
-    }
-
-    .row-1, .row-2, .row-3 {
+    .quibbles-ui-row {
         display: flex;
         gap: 20px;
-    }
 
-    .row-1 {
-        #player-area-top {
-            background-color: blue;
+        #player-hand {
             flex-grow: 1;
         }
+    }
 
+    #quibbles-ui-row-1 {
         #card-deck, #card-discard {
-            background-color: red;
-            width: $card-width;
+            width: $card-width + 10px;
         }
     }
 
-    .row-2 {
+    #quibbles-ui-row-2 {
         #card-display {
-            background-color: greenyellow;
             flex-grow: 1;
-        }
-
-        #player-area-left, #player-area-right {
-            background-color: blue;
-            width: $card-width;
-        }
-    }
-
-    .row-3 {
-        #player-area-bottom {
-            background-color: blue;
-            flex-grow: 1;
-        }
-
-        .spacer {
-            background-color: red;
-            width: $card-width;
         }
     }
 }

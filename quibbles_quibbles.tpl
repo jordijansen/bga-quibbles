@@ -25,23 +25,15 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 <div class="quibbles">
-    <div id="player-hand" class="whiteblock">
-
+    <div id="quibbles-ui-row-1" class="quibbles-ui-row">
+        <div class="whiteblock"><div id="card-deck"></div></div>
+        <div id="player-hand" class="whiteblock"></div>
+        <div class="whiteblock"><div id="card-discard"></div></div>
     </div>
-    <div class="row-1">
-        <div id="card-deck" class="whiteblock">deck</div>
-        <div id="player-area-top" class="whiteblock">player-top</div>
-        <div id="card-discard" class="whiteblock">discard</div>
-    </div>
-    <div class="row-2">
-        <div id="player-area-left" class="whiteblock">player-left</div>
+    <div id="quibbles-ui-row-2" class="quibbles-ui-row">
         <div id="card-display" class="whiteblock"></div>
-        <div id="player-area-right" class="whiteblock">player-right</div>
     </div>
-    <div class="row-3">
-        <div class="spacer whiteblock"></div>
-        <div id="player-area-bottom" class="whiteblock">player-bottom</div>
-        <div class="spacer whiteblock" ></div>
+    <div id="quibbles-ui-row-3" class="quibbles-ui-row">
     </div>
 </div>
 

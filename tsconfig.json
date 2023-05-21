@@ -11,10 +11,26 @@
     "src/bga/Framework.d.ts",
     "src/bga/Counter.d.ts",
     "src/bga/Define.ts",
+    "src/Quibbles.d.ts",
 
-    "src/bga-cards/CardManager.ts",
+    "node_modules/bga-animations/src/animations/cumulated-animations.ts",
+    "node_modules/bga-animations/src/animations/pause-animation.ts",
+    "node_modules/bga-animations/src/animations/show-screen-center-animation.ts",
+    "node_modules/bga-animations/src/animations/slide-animation.ts",
+    "node_modules/bga-animations/src/animations/slide-to-animation.ts",
+    "node_modules/bga-animations/src/animation-manager.ts",
+    "node_modules/bga-animations/src/animations.ts",
+    "node_modules/bga-animations/src/animations-utils.ts",
 
-    "src/quibbles.d.ts",
-    "src/quibbles.ts"
+    "node_modules/bga-cards/src/animations.ts",
+    "node_modules/bga-cards/src/stocks/card-stock.ts",
+    "node_modules/bga-cards/src/stocks/line-stock.ts",
+    "node_modules/bga-cards/src/stocks/deck.ts",
+    "node_modules/bga-cards/src/card-manager.ts",
+    "node_modules/bga-cards/src/sort.ts",
+
+    "src/CardsManager.ts",
+    "src/PlayerManager.ts",
+    "src/Quibbles.ts"
   ]
 }

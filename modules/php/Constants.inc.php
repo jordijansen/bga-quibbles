@@ -1,6 +1,7 @@
 <?php
 
-const DISPLAY_CARD_SIZE = 5;
+const DISPLAY_CARD_SIZE = 6;
+const INITIAL_HAND_SIZE = 3;
 
 /**
  * State

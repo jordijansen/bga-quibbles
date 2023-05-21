@@ -16,8 +16,6 @@ class CardManager extends AbstractCardManager {
         }
         shuffle($cards);
         parent::init($cards);
-
-        $this->fillDisplay();
     }
 
     public function fillDisplay(): array
@@ -28,6 +26,13 @@ class CardManager extends AbstractCardManager {
             $this->cards->pickCardsForLocation($nrOfCardsToAddToDisplay, ZONE_DECK, ZONE_DISPLAY);
         }
         return $this->getCardsInLocation(ZONE_DISPLAY);
+    }
+
+    public function dealInitialCardsToPlayers($players) {
+        foreach( $players as $player_id => $player )
+        {
+            $this->cards->pickCardsForLocation(INITIAL_HAND_SIZE, ZONE_DECK, ZONE_PLAYER_HAND, $player_id);
+        }
     }
 
     private function determineTypeArgMaxForType($type) {

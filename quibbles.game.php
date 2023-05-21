@@ -99,7 +99,14 @@ class Quibbles extends Table
         //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
         //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
+        // Create cards and add them all to the deck
         $this->cardManager->setup();
+        // Fill the display with 6 cards
+        $this->cardManager->fillDisplay();
+        // Deal 3 cards to each player
+        $this->cardManager->dealInitialCardsToPlayers($players);
+
+
        
 
         // Activate first player (which is in general a good idea :) )
@@ -121,16 +128,27 @@ class Quibbles extends Table
     {
         $result = array();
     
-        $current_player_id = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
+        $currentPlayerId = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
     
         // Get information about players
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result['players'] = self::getCollectionFromDb( $sql );
-  
-        // TODO: Gather all information about current game situation (visible by player $current_player_id).
+
+        foreach($result['players'] as $playerId => &$player) {
+            $player['handCount'] = intval($this->cardManager->countCardsInLocation('hand', $playerId));
+             if ($currentPlayerId == $playerId) {
+                 $player['self'] = true;
+                 $player['hand'] = $this->cardManager->getCardsInLocation(ZONE_PLAYER_HAND, $currentPlayerId);
+             } else {
+                 $player['self'] = false;
+             }
+        }
 
         $result['display'] = $this->cardManager->getCardsInLocation(ZONE_DISPLAY);
+        $result['discard'] = $this->cardManager->getCardsInLocation(ZONE_DISCARD);
+
+        $result['deckCount'] = $this->cardManager->countCardsInLocation(ZONE_DECK);
 
         return $result;
     }

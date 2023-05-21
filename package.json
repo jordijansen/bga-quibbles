@@ -13,6 +13,9 @@
   },
   "author": "Jordi Jansen",
   "license": "ISC",
+  "dependencies": {
+    "bga-cards": "thoun/bga-cards#1.0.3"
+  },
   "devDependencies": {
     "sass": "^1.62.1",
     "typescript": "^5.0.4"

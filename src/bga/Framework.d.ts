@@ -1,8 +1,9 @@
 /**
  * Framework interfaces
  */
-
 interface Game {
+    instantaneousMode: boolean;
+
     setup: (gamedatas: any) => void;
     onEnteringState: (stateName: string, args: any) => void;
     onLeavingState: (stateName: string ) => void;
@@ -32,6 +33,7 @@ interface GameData {
     playerorder: (string | number)[];
     players: { [playerId: number]: QuibblesPlayer };
     tablespeed: string;
+    instantaneousMode: boolean
 }
 
 /* TODO repace Function by (..params) => void */

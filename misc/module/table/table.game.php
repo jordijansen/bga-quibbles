@@ -365,7 +365,11 @@ class Deck {
 
     public function createCards(array $cards, string $location) {}
 
-    public function countCardInLocation(string $location): int {
+    public function getCardsInLocation(string $location, int $location_arg = 0): array {
+        return [];
+    }
+
+    public function countCardInLocation(string $location, int $location_arg = 0): int {
         return 0;
     }
 

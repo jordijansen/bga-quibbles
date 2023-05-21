@@ -18,9 +18,20 @@ abstract class AbstractCardManager extends APP_DbObject {
         $this->cards->shuffle($initialLocation);
     }
 
-    public function getCardsInLocation(string $location): array
+    public function getCardsInLocation(string $location, int $location_arg = null): array
     {
-        $dbResults = $this->cards->getCardsInLocation($location);
+        $dbResults = $this->cards->getCardsInLocation($location, $location_arg);
         return array_map(fn($dbCard) => new Card($dbCard), array_values($dbResults));
+    }
+
+    public function getIdsInLocation(string $location, int $location_arg = null): array
+    {
+        $dbResults = $this->cards->getCardsInLocation($location, $location_arg);
+        return array_keys($dbResults);
+    }
+
+    public function countCardsInLocation(string $location, int $location_arg = null): int
+    {
+        return $this->cards->countCardInLocation($location, $location_arg);
     }
 }

@@ -9,10 +9,14 @@ declare const g_archive_mode;
 
 class Quibbles implements QuibblesGame {
 
+    instantaneousMode: boolean;
     private gamedatas: QuibblesGameData;
-    private cardManager: CardManager;
+    private cardsManager: CardsManager;
+    private playerManager: PlayerManager
 
     constructor() {
+        this.cardsManager = new CardsManager(this);
+        this.playerManager = new PlayerManager(this);
     }
 
     /*
@@ -32,21 +36,10 @@ class Quibbles implements QuibblesGame {
         log( "Starting game setup" );
 
         this.gamedatas = gamedatas;
-        this.cardManager = new CardManager(this, {
-            cardHeightInPixels: 257,
-            cardWidthInPixels: 165,
-            getId(card: Card) {
-                return `quibbles-card-${card.id}`
-            },
-            getCardClassNames(card: Card) {
-                return `quibbles-card quibbles-card-${card.type}-${card.type_arg}`
-            }
-        });
 
-        this.cardManager.addLocation('player-hand', new HorizontalCardLocation(this.cardManager, 'player-hand'))
-        this.cardManager.addLocation('display', new HorizontalCardLocation(this.cardManager, 'card-display'))
+        this.cardsManager.setUp(gamedatas);
 
-        this.cardManager.getLocation('display').addAll(gamedatas.display);
+        this.playerManager.setUp(gamedatas);
 
         log('gamedatas', gamedatas);
 
