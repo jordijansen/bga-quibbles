@@ -796,29 +796,40 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /**
- * A basic stock for a list of cards, based on flex.
+ * A stock with manually placed cards
  */
-var LineStock = /** @class */ (function (_super) {
-    __extends(LineStock, _super);
+var ManualPositionStock = /** @class */ (function (_super) {
+    __extends(ManualPositionStock, _super);
     /**
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
-     * @param settings a `LineStockSettings` object
      */
-    function LineStock(manager, element, settings) {
-        var _this = this;
-        var _a, _b, _c, _d;
-        _this = _super.call(this, manager, element, settings) || this;
+    function ManualPositionStock(manager, element, settings, updateDisplay) {
+        var _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
-        element.classList.add('line-stock');
-        element.dataset.center = ((_a = settings === null || settings === void 0 ? void 0 : settings.center) !== null && _a !== void 0 ? _a : true).toString();
-        element.style.setProperty('--wrap', (_b = settings === null || settings === void 0 ? void 0 : settings.wrap) !== null && _b !== void 0 ? _b : 'wrap');
-        element.style.setProperty('--direction', (_c = settings === null || settings === void 0 ? void 0 : settings.direction) !== null && _c !== void 0 ? _c : 'row');
-        element.style.setProperty('--gap', (_d = settings === null || settings === void 0 ? void 0 : settings.gap) !== null && _d !== void 0 ? _d : '8px');
+        _this.updateDisplay = updateDisplay;
+        element.classList.add('manual-position-stock');
         return _this;
     }
-    return LineStock;
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
+    ManualPositionStock.prototype.addCard = function (card, animation, settings) {
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        this.updateDisplay(this.element, this.getCards(), card, this);
+        return promise;
+    };
+    ManualPositionStock.prototype.cardRemoved = function (card) {
+        _super.prototype.cardRemoved.call(this, card);
+        this.updateDisplay(this.element, this.getCards(), card, this);
+    };
+    return ManualPositionStock;
 }(CardStock));
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
@@ -1121,12 +1132,45 @@ function sortFunction() {
         return 0;
     };
 }
+/**
+ * Similar to LineStock except this stock uses the available space to lay out the elements and overlap them if there is not enough space guaranteeing a single line of elements.
+ */
+var LineFitPositionStock = /** @class */ (function (_super) {
+    __extends(LineFitPositionStock, _super);
+    function LineFitPositionStock(manager, element, settings) {
+        return _super.call(this, manager, element, settings, function (element, cards, lastCard, stock) {
+            var margin = 8;
+            var totalCardWidth = cards.length * manager.getCardWidth();
+            console.log('totalCardWidth : ' + totalCardWidth);
+            var totalMarginWidth = (cards.length - 1) * margin;
+            console.log('totalMarginWidth : ' + totalMarginWidth);
+            var totalWidth = totalCardWidth + totalMarginWidth;
+            console.log('totalWidth : ' + totalWidth);
+            console.log('clientWidth : ' + element.clientWidth);
+            var leftOffset = 0;
+            var leftForSingleCard = manager.getCardWidth() + margin;
+            if (totalWidth > element.clientWidth) {
+                // The totalWidth required is larger than the available with we need to calculate overlap
+                leftForSingleCard = (element.clientWidth - manager.getCardWidth() - margin) / (cards.length - 1);
+            }
+            else {
+                leftOffset = ((element.clientWidth - totalWidth) / 2) - 10;
+            }
+            cards.forEach(function (card, index) {
+                var cardDiv = stock.getCardElement(card);
+                var cardLeft = (leftForSingleCard * index) + leftOffset;
+                cardDiv.style.left = "".concat(cardLeft, "px");
+            });
+        }) || this;
+    }
+    return LineFitPositionStock;
+}(ManualPositionStock));
 var cardWidth = 165;
 var cardHeight = 257;
 var CardsManager = /** @class */ (function (_super) {
     __extends(CardsManager, _super);
-    function CardsManager(game) {
-        var _this = _super.call(this, game, {
+    function CardsManager(quibblesGame) {
+        var _this = _super.call(this, quibblesGame, {
             getId: function (card) { return "quibbles-card-".concat(card.id); },
             setupDiv: function (card, div) {
                 div.classList.add('quibbles-card');
@@ -1141,23 +1185,32 @@ var CardsManager = /** @class */ (function (_super) {
             cardWidth: cardWidth,
             cardHeight: cardHeight
         }) || this;
+        _this.quibblesGame = quibblesGame;
         return _this;
     }
     CardsManager.prototype.setUp = function (gameData) {
-        this.display = new LineStock(this, $('card-display'), { wrap: 'nowrap' });
+        this.display = new LineFitPositionStock(this, $('card-display'), {});
         this.deck = new Deck(this, $('card-deck'), {
             autoUpdateCardNumber: false,
             counter: { show: true, position: "center", extraClasses: "quibbles-counter" },
             cardNumber: gameData.deckCount,
-            topCard: { id: -1 }, // this is just a card as this will never change
+            topCard: gameData.deckCount > 0 ? { id: -1 } : undefined, // this is just a card as this will never change
         });
         this.discard = new Deck(this, $('card-discard'), {
-            autoUpdateCardNumber: false,
+            autoUpdateCardNumber: true,
             counter: { show: true, position: "center", extraClasses: "quibbles-counter" },
-            cardNumber: gameData.discard.length,
-            topCard: gameData.discard.length > 0 ? gameData.discard[0] : undefined
+            cardNumber: 0
         });
+        this.discard.addCards(gameData.discard);
         this.display.addCards(gameData.display);
+        if (!this.quibblesGame.isReadOnly()) {
+            this.playerHand = new LineFitPositionStock(this, $('player-hand'), {});
+            for (var playersKey in gameData.players) {
+                if (gameData.players[playersKey].self) {
+                    this.playerHand.addCards(gameData.players[playersKey].hand);
+                }
+            }
+        }
     };
     return CardsManager;
 }(CardManager));
@@ -1176,10 +1229,10 @@ var PlayerManager = /** @class */ (function () {
                 playerAreas.push(playerArea);
             }
         }
-        playerAreas.forEach(function (playerArea) { return dojo.place(playerArea, "quibbles-ui-row-3"); });
+        playerAreas.forEach(function (playerArea) { return dojo.place(playerArea, "quibbles-ui-row-4"); });
     };
     PlayerManager.prototype.createPlayerArea = function (player) {
-        return "<div id=\"player-area-".concat(player.id, "\" class=\"player-area whiteblock\">\n                    <h2 style=\"color: #").concat(player.color, ";\">").concat(player.name, "</h2>\n                </div>");
+        return "<div id=\"player-area-".concat(player.id, "\" class=\"player-area whiteblock\">\n                    <div class=\"quibbles-title-wrapper\">\n                        <h2 class=\"quibbles-title\" style=\"background-color: #").concat(player.color, ";\">").concat(player.name, "</h2>\n                    </div>\n                </div>");
     };
     return PlayerManager;
 }());

@@ -84,7 +84,7 @@ class Quibbles implements QuibblesGame {
     //// Utility methods
     ///////////////////////////////////////////////////
 
-    private isReadOnly() {
+    public isReadOnly() {
         return (this as any).isSpectator || typeof g_replayFrom != 'undefined' || g_archive_mode;
     }
 

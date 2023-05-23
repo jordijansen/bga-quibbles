@@ -20,9 +20,12 @@ interface QuibblesPlayer extends Player {
      * Indicates if the player is the player viewing the game (self)
      */
     self: boolean
+    handCount: number
+    hand?: []
 }
 
 interface QuibblesGame extends Game {
     getPlayerId(): number;
     getPlayer(playerId: number): QuibblesPlayer;
+    isReadOnly(): boolean;
 }

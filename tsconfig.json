@@ -24,11 +24,12 @@
 
     "node_modules/bga-cards/src/animations.ts",
     "node_modules/bga-cards/src/stocks/card-stock.ts",
-    "node_modules/bga-cards/src/stocks/line-stock.ts",
+    "node_modules/bga-cards/src/stocks/manual-position-stock.ts",
     "node_modules/bga-cards/src/stocks/deck.ts",
     "node_modules/bga-cards/src/card-manager.ts",
     "node_modules/bga-cards/src/sort.ts",
 
+    "src/LineFitPositionStock.ts",
     "src/CardsManager.ts",
     "src/PlayerManager.ts",
     "src/Quibbles.ts"

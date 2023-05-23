@@ -72,6 +72,9 @@
 $card-width: 165px;
 $card-height: 257px;
 
+$quibbles-color-roze: #ece1ec;
+$quibbles-color-purple: #7d347f;
+
 @mixin selectable {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
     animation: crypt-pulse 2s infinite;
@@ -88,11 +91,22 @@ $card-height: 257px;
     outline: 4px rgba(255, 0, 0, 0.75) solid !important;
 }
 @mixin quibbles-card-sprites($number, $max) {
-    @for $i from 1 through $max {
-        .front[data-number="#{$number}"][data-variation="#{$i}"] {
-            background-image: url("img/cards_#{$number}.png");
-            background-position: #{(math.div(100%, ($max - 1))*($i - 1))} 0;
+    .front[data-number="#{$number}"] {
+        background-image: url("img/cards_#{$number}.png");
+
+        @for $i from 1 through $max {
+            &[data-variation="#{$i}"] {
+                background-position: #{(math.div(100%, ($max - 1))*($i - 1))} 0;
+            }
         }
+    }
+
+}
+
+html, .mode_3d #game_play_area_background {
+    background: $quibbles-color-roze;
+    .whiteblock {
+        border-radius: 10px;
     }
 }
 
@@ -101,7 +115,6 @@ $card-height: 257px;
     position: relative;
     width: $card-width;
     height: $card-height;
-    margin: 5px;
     border-radius: 12px;
 
     &.disabled {
@@ -138,6 +151,19 @@ $card-height: 257px;
 }
 
 .quibbles {
+    .quibbles-title-wrapper {
+        display: flex;
+        justify-content: center;
+
+        .quibbles-title {
+            display:inline-block;
+            border-radius: 5px;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            text-transform: uppercase;
+        }
+    }
 
     .bga-cards-deck-counter {
         &.quibbles-counter {
@@ -153,21 +179,51 @@ $card-height: 257px;
     .quibbles-ui-row {
         display: flex;
         gap: 20px;
-
-        #player-hand {
-            flex-grow: 1;
-        }
     }
 
     #quibbles-ui-row-1 {
+        #logo-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
         #card-deck, #card-discard {
-            width: $card-width + 10px;
+            width: $card-width;
         }
     }
 
     #quibbles-ui-row-2 {
+        .whiteblock {
+            width: 100%;
+            background-color: $quibbles-color-purple;
+        }
         #card-display {
-            flex-grow: 1;
+            height: $card-height;
+        }
+    }
+
+    #quibbles-ui-row-3 {
+        .whiteblock {
+            width: 100%;
+        }
+        #player-hand {
+            height: $card-height;
+        }
+    }
+
+    #quibbles-ui-row-4 {
+        flex-wrap: wrap;
+        justify-content: center;
+
+        .player-area {
+            width: calc(50% - 30px);
         }
     }
 }

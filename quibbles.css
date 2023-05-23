@@ -276,12 +276,18 @@ body > .card {
   top: calc((var(--height) + var(--shift)) * var(--order));
 }
 
+html, .mode_3d #game_play_area_background {
+  background: #ece1ec;
+}
+html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
+  border-radius: 10px;
+}
+
 .quibbles-card {
   display: inline-block;
   position: relative;
   width: 165px;
   height: 257px;
-  margin: 5px;
   border-radius: 12px;
 }
 .quibbles-card.disabled {
@@ -302,511 +308,415 @@ body > .card {
 .quibbles-card .card-sides .card-side.front, .quibbles-card .card-sides .card-side.back {
   background-size: cover;
 }
-.quibbles-card .front[data-number="1"][data-variation="1"] {
+.quibbles-card .front[data-number="1"] {
   background-image: url("img/cards_1.png");
+}
+.quibbles-card .front[data-number="1"][data-variation="1"] {
   background-position: 0% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="2"] {
-  background-image: url("img/cards_1.png");
   background-position: 6.6666666667% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="3"] {
-  background-image: url("img/cards_1.png");
   background-position: 13.3333333333% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="4"] {
-  background-image: url("img/cards_1.png");
   background-position: 20% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="5"] {
-  background-image: url("img/cards_1.png");
   background-position: 26.6666666667% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="6"] {
-  background-image: url("img/cards_1.png");
   background-position: 33.3333333333% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="7"] {
-  background-image: url("img/cards_1.png");
   background-position: 40% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="8"] {
-  background-image: url("img/cards_1.png");
   background-position: 46.6666666667% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="9"] {
-  background-image: url("img/cards_1.png");
   background-position: 53.3333333333% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="10"] {
-  background-image: url("img/cards_1.png");
   background-position: 60% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="11"] {
-  background-image: url("img/cards_1.png");
   background-position: 66.6666666667% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="12"] {
-  background-image: url("img/cards_1.png");
   background-position: 73.3333333333% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="13"] {
-  background-image: url("img/cards_1.png");
   background-position: 80% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="14"] {
-  background-image: url("img/cards_1.png");
   background-position: 86.6666666667% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="15"] {
-  background-image: url("img/cards_1.png");
   background-position: 93.3333333333% 0;
 }
 .quibbles-card .front[data-number="1"][data-variation="16"] {
-  background-image: url("img/cards_1.png");
   background-position: 100% 0;
 }
-.quibbles-card .front[data-number="2"][data-variation="1"] {
+.quibbles-card .front[data-number="2"] {
   background-image: url("img/cards_2.png");
+}
+.quibbles-card .front[data-number="2"][data-variation="1"] {
   background-position: 0% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="2"] {
-  background-image: url("img/cards_2.png");
   background-position: 5.8823529412% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="3"] {
-  background-image: url("img/cards_2.png");
   background-position: 11.7647058824% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="4"] {
-  background-image: url("img/cards_2.png");
   background-position: 17.6470588235% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="5"] {
-  background-image: url("img/cards_2.png");
   background-position: 23.5294117647% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="6"] {
-  background-image: url("img/cards_2.png");
   background-position: 29.4117647059% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="7"] {
-  background-image: url("img/cards_2.png");
   background-position: 35.2941176471% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="8"] {
-  background-image: url("img/cards_2.png");
   background-position: 41.1764705882% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="9"] {
-  background-image: url("img/cards_2.png");
   background-position: 47.0588235294% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="10"] {
-  background-image: url("img/cards_2.png");
   background-position: 52.9411764706% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="11"] {
-  background-image: url("img/cards_2.png");
   background-position: 58.8235294118% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="12"] {
-  background-image: url("img/cards_2.png");
   background-position: 64.7058823529% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="13"] {
-  background-image: url("img/cards_2.png");
   background-position: 70.5882352941% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="14"] {
-  background-image: url("img/cards_2.png");
   background-position: 76.4705882353% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="15"] {
-  background-image: url("img/cards_2.png");
   background-position: 82.3529411765% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="16"] {
-  background-image: url("img/cards_2.png");
   background-position: 88.2352941176% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="17"] {
-  background-image: url("img/cards_2.png");
   background-position: 94.1176470588% 0;
 }
 .quibbles-card .front[data-number="2"][data-variation="18"] {
-  background-image: url("img/cards_2.png");
   background-position: 100% 0;
 }
-.quibbles-card .front[data-number="3"][data-variation="1"] {
+.quibbles-card .front[data-number="3"] {
   background-image: url("img/cards_3.png");
+}
+.quibbles-card .front[data-number="3"][data-variation="1"] {
   background-position: 0% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="2"] {
-  background-image: url("img/cards_3.png");
   background-position: 5.2631578947% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="3"] {
-  background-image: url("img/cards_3.png");
   background-position: 10.5263157895% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="4"] {
-  background-image: url("img/cards_3.png");
   background-position: 15.7894736842% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="5"] {
-  background-image: url("img/cards_3.png");
   background-position: 21.0526315789% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="6"] {
-  background-image: url("img/cards_3.png");
   background-position: 26.3157894737% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="7"] {
-  background-image: url("img/cards_3.png");
   background-position: 31.5789473684% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="8"] {
-  background-image: url("img/cards_3.png");
   background-position: 36.8421052632% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="9"] {
-  background-image: url("img/cards_3.png");
   background-position: 42.1052631579% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="10"] {
-  background-image: url("img/cards_3.png");
   background-position: 47.3684210526% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="11"] {
-  background-image: url("img/cards_3.png");
   background-position: 52.6315789474% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="12"] {
-  background-image: url("img/cards_3.png");
   background-position: 57.8947368421% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="13"] {
-  background-image: url("img/cards_3.png");
   background-position: 63.1578947368% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="14"] {
-  background-image: url("img/cards_3.png");
   background-position: 68.4210526316% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="15"] {
-  background-image: url("img/cards_3.png");
   background-position: 73.6842105263% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="16"] {
-  background-image: url("img/cards_3.png");
   background-position: 78.9473684211% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="17"] {
-  background-image: url("img/cards_3.png");
   background-position: 84.2105263158% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="18"] {
-  background-image: url("img/cards_3.png");
   background-position: 89.4736842105% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="19"] {
-  background-image: url("img/cards_3.png");
   background-position: 94.7368421053% 0;
 }
 .quibbles-card .front[data-number="3"][data-variation="20"] {
-  background-image: url("img/cards_3.png");
   background-position: 100% 0;
 }
-.quibbles-card .front[data-number="4"][data-variation="1"] {
+.quibbles-card .front[data-number="4"] {
   background-image: url("img/cards_4.png");
+}
+.quibbles-card .front[data-number="4"][data-variation="1"] {
   background-position: 0% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="2"] {
-  background-image: url("img/cards_4.png");
   background-position: 4.7619047619% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="3"] {
-  background-image: url("img/cards_4.png");
   background-position: 9.5238095238% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="4"] {
-  background-image: url("img/cards_4.png");
   background-position: 14.2857142857% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="5"] {
-  background-image: url("img/cards_4.png");
   background-position: 19.0476190476% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="6"] {
-  background-image: url("img/cards_4.png");
   background-position: 23.8095238095% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="7"] {
-  background-image: url("img/cards_4.png");
   background-position: 28.5714285714% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="8"] {
-  background-image: url("img/cards_4.png");
   background-position: 33.3333333333% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="9"] {
-  background-image: url("img/cards_4.png");
   background-position: 38.0952380952% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="10"] {
-  background-image: url("img/cards_4.png");
   background-position: 42.8571428571% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="11"] {
-  background-image: url("img/cards_4.png");
   background-position: 47.619047619% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="12"] {
-  background-image: url("img/cards_4.png");
   background-position: 52.380952381% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="13"] {
-  background-image: url("img/cards_4.png");
   background-position: 57.1428571429% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="14"] {
-  background-image: url("img/cards_4.png");
   background-position: 61.9047619048% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="15"] {
-  background-image: url("img/cards_4.png");
   background-position: 66.6666666667% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="16"] {
-  background-image: url("img/cards_4.png");
   background-position: 71.4285714286% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="17"] {
-  background-image: url("img/cards_4.png");
   background-position: 76.1904761905% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="18"] {
-  background-image: url("img/cards_4.png");
   background-position: 80.9523809524% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="19"] {
-  background-image: url("img/cards_4.png");
   background-position: 85.7142857143% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="20"] {
-  background-image: url("img/cards_4.png");
   background-position: 90.4761904762% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="21"] {
-  background-image: url("img/cards_4.png");
   background-position: 95.2380952381% 0;
 }
 .quibbles-card .front[data-number="4"][data-variation="22"] {
-  background-image: url("img/cards_4.png");
   background-position: 100% 0;
 }
-.quibbles-card .front[data-number="5"][data-variation="1"] {
+.quibbles-card .front[data-number="5"] {
   background-image: url("img/cards_5.png");
+}
+.quibbles-card .front[data-number="5"][data-variation="1"] {
   background-position: 0% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="2"] {
-  background-image: url("img/cards_5.png");
   background-position: 4.347826087% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="3"] {
-  background-image: url("img/cards_5.png");
   background-position: 8.6956521739% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="4"] {
-  background-image: url("img/cards_5.png");
   background-position: 13.0434782609% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="5"] {
-  background-image: url("img/cards_5.png");
   background-position: 17.3913043478% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="6"] {
-  background-image: url("img/cards_5.png");
   background-position: 21.7391304348% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="7"] {
-  background-image: url("img/cards_5.png");
   background-position: 26.0869565217% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="8"] {
-  background-image: url("img/cards_5.png");
   background-position: 30.4347826087% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="9"] {
-  background-image: url("img/cards_5.png");
   background-position: 34.7826086957% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="10"] {
-  background-image: url("img/cards_5.png");
   background-position: 39.1304347826% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="11"] {
-  background-image: url("img/cards_5.png");
   background-position: 43.4782608696% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="12"] {
-  background-image: url("img/cards_5.png");
   background-position: 47.8260869565% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="13"] {
-  background-image: url("img/cards_5.png");
   background-position: 52.1739130435% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="14"] {
-  background-image: url("img/cards_5.png");
   background-position: 56.5217391304% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="15"] {
-  background-image: url("img/cards_5.png");
   background-position: 60.8695652174% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="16"] {
-  background-image: url("img/cards_5.png");
   background-position: 65.2173913043% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="17"] {
-  background-image: url("img/cards_5.png");
   background-position: 69.5652173913% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="18"] {
-  background-image: url("img/cards_5.png");
   background-position: 73.9130434783% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="19"] {
-  background-image: url("img/cards_5.png");
   background-position: 78.2608695652% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="20"] {
-  background-image: url("img/cards_5.png");
   background-position: 82.6086956522% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="21"] {
-  background-image: url("img/cards_5.png");
   background-position: 86.9565217391% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="22"] {
-  background-image: url("img/cards_5.png");
   background-position: 91.3043478261% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="23"] {
-  background-image: url("img/cards_5.png");
   background-position: 95.652173913% 0;
 }
 .quibbles-card .front[data-number="5"][data-variation="24"] {
-  background-image: url("img/cards_5.png");
   background-position: 100% 0;
 }
-.quibbles-card .front[data-number="6"][data-variation="1"] {
+.quibbles-card .front[data-number="6"] {
   background-image: url("img/cards_6.png");
+}
+.quibbles-card .front[data-number="6"][data-variation="1"] {
   background-position: 0% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="2"] {
-  background-image: url("img/cards_6.png");
   background-position: 4% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="3"] {
-  background-image: url("img/cards_6.png");
   background-position: 8% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="4"] {
-  background-image: url("img/cards_6.png");
   background-position: 12% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="5"] {
-  background-image: url("img/cards_6.png");
   background-position: 16% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="6"] {
-  background-image: url("img/cards_6.png");
   background-position: 20% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="7"] {
-  background-image: url("img/cards_6.png");
   background-position: 24% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="8"] {
-  background-image: url("img/cards_6.png");
   background-position: 28% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="9"] {
-  background-image: url("img/cards_6.png");
   background-position: 32% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="10"] {
-  background-image: url("img/cards_6.png");
   background-position: 36% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="11"] {
-  background-image: url("img/cards_6.png");
   background-position: 40% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="12"] {
-  background-image: url("img/cards_6.png");
   background-position: 44% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="13"] {
-  background-image: url("img/cards_6.png");
   background-position: 48% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="14"] {
-  background-image: url("img/cards_6.png");
   background-position: 52% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="15"] {
-  background-image: url("img/cards_6.png");
   background-position: 56% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="16"] {
-  background-image: url("img/cards_6.png");
   background-position: 60% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="17"] {
-  background-image: url("img/cards_6.png");
   background-position: 64% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="18"] {
-  background-image: url("img/cards_6.png");
   background-position: 68% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="19"] {
-  background-image: url("img/cards_6.png");
   background-position: 72% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="20"] {
-  background-image: url("img/cards_6.png");
   background-position: 76% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="21"] {
-  background-image: url("img/cards_6.png");
   background-position: 80% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="22"] {
-  background-image: url("img/cards_6.png");
   background-position: 84% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="23"] {
-  background-image: url("img/cards_6.png");
   background-position: 88% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="24"] {
-  background-image: url("img/cards_6.png");
   background-position: 92% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="25"] {
-  background-image: url("img/cards_6.png");
   background-position: 96% 0;
 }
 .quibbles-card .front[data-number="6"][data-variation="26"] {
-  background-image: url("img/cards_6.png");
   background-position: 100% 0;
 }
 
+.quibbles .quibbles-title-wrapper {
+  display: flex;
+  justify-content: center;
+}
+.quibbles .quibbles-title-wrapper .quibbles-title {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+}
 .quibbles .bga-cards-deck-counter.quibbles-counter {
   color: white;
   text-align: center;
@@ -819,14 +729,38 @@ body > .card {
   display: flex;
   gap: 20px;
 }
-.quibbles .quibbles-ui-row #player-hand {
+.quibbles #quibbles-ui-row-1 #logo-container {
   flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.quibbles #quibbles-ui-row-1 #logo-container img {
+  max-width: 100%;
+  height: auto;
 }
 .quibbles #quibbles-ui-row-1 #card-deck, .quibbles #quibbles-ui-row-1 #card-discard {
-  width: 175px;
+  width: 165px;
+}
+.quibbles #quibbles-ui-row-2 .whiteblock {
+  width: 100%;
+  background-color: #7d347f;
 }
 .quibbles #quibbles-ui-row-2 #card-display {
-  flex-grow: 1;
+  height: 257px;
+}
+.quibbles #quibbles-ui-row-3 .whiteblock {
+  width: 100%;
+}
+.quibbles #quibbles-ui-row-3 #player-hand {
+  height: 257px;
+}
+.quibbles #quibbles-ui-row-4 {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.quibbles #quibbles-ui-row-4 .player-area {
+  width: calc(50% - 30px);
 }
 
 /*# sourceMappingURL=quibbles.css.map */
