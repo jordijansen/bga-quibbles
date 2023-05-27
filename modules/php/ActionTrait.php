@@ -73,6 +73,10 @@ trait ActionTrait {
 
        $playerId = intval($this->getActivePlayerId());
 
+       if (sizeof($selectedCards) == 0) {
+           throw new BgaUserException(clienttranslate("You need to select card(s) from the display. Or PASS"));
+       }
+
        $take = $this->getGlobalVariable(TAKE);
        // If multiple cards will be discarded, each set should consist of 1 card. That matches the totalDiscardValue
        $isSingleCardDiscard = sizeof($take->cardsToDiscard) == 1;
@@ -80,7 +84,7 @@ trait ActionTrait {
        $cardsTaken = [];
        foreach($selectedCards as $set) {
            if (sizeof($set) == 0) {
-               throw new BgaUserException(clienttranslate("You need to select card(s) from the display"));
+               throw new BgaUserException(clienttranslate("You need to select card(s) from the display. Or PASS"));
            }
 
            // Some of these errors are not translated as this should be prevented in the UI
