@@ -21,11 +21,59 @@ interface QuibblesPlayer extends Player {
      */
     self: boolean
     handCount: number
-    hand?: []
+    hand?: Card[]
+    collection: Card[];
 }
 
 interface QuibblesGame extends Game {
     getPlayerId(): number;
     getPlayer(playerId: number): QuibblesPlayer;
     isReadOnly(): boolean;
+
+    setTooltipToClass(className: string, html: string): void;
+}
+
+interface EnteringPlayerTurnArgs {}
+
+interface PlayerTurnTakeConfirmArgs {
+    canCancelMoves: boolean,
+    cardsToDiscard: Card[],
+    totalDiscardValue: number
+}
+
+interface PlayerTurnAddCollectionArgs {
+    playerHandTypeCount: {[type: string]: {card_type: string, count: number }}
+}
+
+/**
+ * Notification Args
+ */
+
+interface NotifCancelLastMoves {
+    displayCards: Card[]
+}
+
+interface NotifTakeConfirmed {
+    playerId: number,
+    player_name: string,
+    handCount: number,
+    cardsDiscarded: Card[],
+    cardsTaken: Card[]
+}
+
+interface NotifDisplayDiscarded {
+    cardsDiscarded: Card[]
+}
+
+interface NotifDisplayRefilled {
+    displayCards: Card[]
+}
+
+interface NotifCardAddedToCollection {
+    playerId: number,
+    player_name: string,
+    handCount: number,
+    playerScore: number,
+    cardsDiscarded: Card[],
+    cardCollected: Card
 }

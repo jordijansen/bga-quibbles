@@ -361,6 +361,7 @@ var CardStock = /** @class */ (function () {
     function CardStock(manager, element, settings) {
         this.manager = manager;
         this.element = element;
+        this.settings = settings;
         this.cards = [];
         this.selectedCards = [];
         this.selectionMode = 'none';
@@ -386,6 +387,13 @@ var CardStock = /** @class */ (function () {
      */
     CardStock.prototype.getSelection = function () {
         return this.selectedCards.slice();
+    };
+    /**
+     * @returns the selected cards
+     */
+    CardStock.prototype.isSelected = function (card) {
+        var _this = this;
+        return this.selectedCards.some(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
     };
     /**
      * @param card a card
@@ -446,7 +454,9 @@ var CardStock = /** @class */ (function () {
             var element = this.manager.createCardElement(card, ((_c = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _c !== void 0 ? _c : this.manager.isCardVisible(card)));
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
-        this.setSelectableCard(card, this.selectionMode != 'none');
+        if (this.selectionMode !== 'none') {
+            this.setSelectableCard(card, true);
+        }
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
             this.cards.splice(index, 0, card);
         }
@@ -492,7 +502,7 @@ var CardStock = /** @class */ (function () {
         var element = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
         var fromRect = element.getBoundingClientRect();
         this.addCardElementToParent(cardElement, settings);
-        cardElement.classList.remove('selectable', 'selected', 'disabled');
+        this.removeSelectionClassesFromElement(cardElement);
         promise = this.animationFromElement(cardElement, fromRect, {
             originalSide: animation.originalSide,
             rotationDelta: animation.rotationDelta,
@@ -570,14 +580,21 @@ var CardStock = /** @class */ (function () {
      * Remove a card from the stock.
      *
      * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    CardStock.prototype.removeCard = function (card) {
+    CardStock.prototype.removeCard = function (card, settings) {
         if (this.contains(card) && this.element.contains(this.getCardElement(card))) {
-            this.manager.removeCard(card);
+            this.manager.removeCard(card, settings);
         }
-        this.cardRemoved(card);
+        this.cardRemoved(card, settings);
     };
-    CardStock.prototype.cardRemoved = function (card) {
+    /**
+     * Notify the stock that a card is removed.
+     *
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    CardStock.prototype.cardRemoved = function (card, settings) {
         var _this = this;
         var index = this.cards.findIndex(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
         if (index !== -1) {
@@ -591,58 +608,70 @@ var CardStock = /** @class */ (function () {
      * Remove a set of card from the stock.
      *
      * @param cards the cards to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    CardStock.prototype.removeCards = function (cards) {
+    CardStock.prototype.removeCards = function (cards, settings) {
         var _this = this;
-        cards.forEach(function (card) { return _this.removeCard(card); });
+        cards.forEach(function (card) { return _this.removeCard(card, settings); });
     };
     /**
      * Remove all cards from the stock.
+     * @param settings a `RemoveCardSettings` object
      */
-    CardStock.prototype.removeAll = function () {
+    CardStock.prototype.removeAll = function (settings) {
         var _this = this;
         var cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
-        cards.forEach(function (card) { return _this.removeCard(card); });
-    };
-    CardStock.prototype.setSelectableCard = function (card, selectable) {
-        var element = this.getCardElement(card);
-        element.classList.toggle('selectable', selectable);
+        cards.forEach(function (card) { return _this.removeCard(card, settings); });
     };
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
      * If set to 'none', it will unselect all selected cards.
      *
      * @param selectionMode the selection mode
+     * @param selectableCards the selectable cards (all if unset). Calls `setSelectableCards` method
      */
-    CardStock.prototype.setSelectionMode = function (selectionMode) {
+    CardStock.prototype.setSelectionMode = function (selectionMode, selectableCards) {
         var _this = this;
-        if (selectionMode === 'none') {
+        if (selectionMode !== this.selectionMode) {
             this.unselectAll(true);
         }
         this.cards.forEach(function (card) { return _this.setSelectableCard(card, selectionMode != 'none'); });
-        this.element.classList.toggle('selectable', selectionMode != 'none');
+        this.element.classList.toggle('bga-cards_selectable-stock', selectionMode != 'none');
         this.selectionMode = selectionMode;
+        if (selectionMode === 'none') {
+            this.getCards().forEach(function (card) { return _this.removeSelectionClasses(card); });
+        }
+        else {
+            this.setSelectableCards(selectableCards !== null && selectableCards !== void 0 ? selectableCards : this.getCards());
+        }
+    };
+    CardStock.prototype.setSelectableCard = function (card, selectable) {
+        var element = this.getCardElement(card);
+        var selectableCardsClass = this.getSelectableCardClass();
+        var unselectableCardsClass = this.getUnselectableCardClass();
+        if (selectableCardsClass) {
+            element.classList.toggle(selectableCardsClass, selectable);
+        }
+        if (unselectableCardsClass) {
+            element.classList.toggle(unselectableCardsClass, !selectable);
+        }
+        if (!selectable && this.isSelected(card)) {
+            this.unselectCard(card, true);
+        }
     };
     /**
      * Set the selectable class for each card.
      *
      * @param selectableCards the selectable cards. If unset, all cards are marked selectable. Default unset.
-     * @param unselectableCardsClass the class to add to unselectable cards (for example to mark them as disabled). Default 'disabled'.
      */
-    CardStock.prototype.setSelectableCards = function (selectableCards, unselectableCardsClass) {
+    CardStock.prototype.setSelectableCards = function (selectableCards) {
         var _this = this;
-        if (unselectableCardsClass === void 0) { unselectableCardsClass = 'disabled'; }
         if (this.selectionMode === 'none') {
             return;
         }
         var selectableCardsIds = (selectableCards !== null && selectableCards !== void 0 ? selectableCards : this.getCards()).map(function (card) { return _this.manager.getId(card); });
         this.cards.forEach(function (card) {
-            var element = _this.getCardElement(card);
-            var selectable = selectableCardsIds.includes(_this.manager.getId(card));
-            element.classList.toggle('selectable', selectable);
-            if (unselectableCardsClass) {
-                element.classList.toggle(unselectableCardsClass, !selectable);
-            }
+            return _this.setSelectableCard(card, selectableCardsIds.includes(_this.manager.getId(card)));
         });
     };
     /**
@@ -657,11 +686,16 @@ var CardStock = /** @class */ (function () {
         if (this.selectionMode == 'none') {
             return;
         }
+        var element = this.getCardElement(card);
+        var selectableCardsClass = this.getSelectableCardClass();
+        if (!element.classList.contains(selectableCardsClass)) {
+            return;
+        }
         if (this.selectionMode === 'single') {
             this.cards.filter(function (c) { return _this.manager.getId(c) != _this.manager.getId(card); }).forEach(function (c) { return _this.unselectCard(c, true); });
         }
-        var element = this.getCardElement(card);
-        element.classList.add('selected');
+        var selectedCardsClass = this.getSelectedCardClass();
+        element.classList.add(selectedCardsClass);
         this.selectedCards.push(card);
         if (!silent) {
             (_a = this.onSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedCards.slice(), card);
@@ -677,7 +711,8 @@ var CardStock = /** @class */ (function () {
         var _a;
         if (silent === void 0) { silent = false; }
         var element = this.getCardElement(card);
-        element.classList.remove('selected');
+        var selectedCardsClass = this.getSelectedCardClass();
+        element.classList.remove(selectedCardsClass);
         var index = this.selectedCards.findIndex(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
         if (index !== -1) {
             this.selectedCards.splice(index, 1);
@@ -778,6 +813,36 @@ var CardStock = /** @class */ (function () {
     CardStock.prototype.flipCard = function (card, settings) {
         this.manager.flipCard(card, settings);
     };
+    /**
+     * @returns the class to apply to selectable cards. Use class from manager is unset.
+     */
+    CardStock.prototype.getSelectableCardClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectableCardClass) === undefined ? this.manager.getSelectableCardClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectableCardClass;
+    };
+    /**
+     * @returns the class to apply to selectable cards. Use class from manager is unset.
+     */
+    CardStock.prototype.getUnselectableCardClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.unselectableCardClass) === undefined ? this.manager.getUnselectableCardClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.unselectableCardClass;
+    };
+    /**
+     * @returns the class to apply to selected cards. Use class from manager is unset.
+     */
+    CardStock.prototype.getSelectedCardClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectableCardClass) === undefined ? this.manager.getSelectedCardClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectableCardClass;
+    };
+    CardStock.prototype.removeSelectionClasses = function (card) {
+        this.removeSelectionClassesFromElement(this.getCardElement(card));
+    };
+    CardStock.prototype.removeSelectionClassesFromElement = function (cardElement) {
+        var selectableCardsClass = this.getSelectableCardClass();
+        var unselectableCardsClass = this.getUnselectableCardClass();
+        var selectedCardsClass = this.getSelectedCardClass();
+        cardElement.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
+    };
     return CardStock;
 }());
 var __extends = (this && this.__extends) || (function () {
@@ -831,6 +896,109 @@ var ManualPositionStock = /** @class */ (function (_super) {
     };
     return ManualPositionStock;
 }(CardStock));
+var AllVisibleDeck = /** @class */ (function (_super) {
+    __extends(AllVisibleDeck, _super);
+    function AllVisibleDeck(manager, element, settings) {
+        var _this = this;
+        var _a;
+        _this = _super.call(this, manager, element, settings) || this;
+        _this.manager = manager;
+        _this.element = element;
+        element.classList.add('all-visible-deck');
+        var cardWidth = _this.manager.getCardWidth();
+        var cardHeight = _this.manager.getCardHeight();
+        if (cardWidth && cardHeight) {
+            _this.element.style.setProperty('--width', "".concat(cardWidth, "px"));
+            _this.element.style.setProperty('--height', "".concat(cardHeight, "px"));
+        }
+        else {
+            throw new Error("You need to set cardWidth and cardHeight in the card manager to use Deck.");
+        }
+        element.style.setProperty('--shift', (_a = settings.shift) !== null && _a !== void 0 ? _a : '3px');
+        return _this;
+    }
+    AllVisibleDeck.prototype.addCard = function (card, animation, settings) {
+        var promise;
+        var order = this.cards.length;
+        promise = _super.prototype.addCard.call(this, card, animation, settings);
+        var cardId = this.manager.getId(card);
+        var cardDiv = document.getElementById(cardId);
+        cardDiv.style.setProperty('--order', '' + order);
+        this.element.style.setProperty('--tile-count', '' + this.cards.length);
+        return promise;
+    };
+    /**
+     * Set opened state. If true, all cards will be entirely visible.
+     *
+     * @param opened indicate if deck must be always opened. If false, will open only on hover/touch
+     */
+    AllVisibleDeck.prototype.setOpened = function (opened) {
+        this.element.classList.toggle('opened', opened);
+    };
+    AllVisibleDeck.prototype.cardRemoved = function (card) {
+        var _this = this;
+        _super.prototype.cardRemoved.call(this, card);
+        this.cards.forEach(function (c, index) {
+            var cardId = _this.manager.getId(c);
+            var cardDiv = document.getElementById(cardId);
+            cardDiv.style.setProperty('--order', '' + index);
+        });
+        this.element.style.setProperty('--tile-count', '' + this.cards.length);
+    };
+    return AllVisibleDeck;
+}(CardStock));
+/**
+ * A stock to make cards disappear (to automatically remove discarded cards, or to represent a bag)
+ */
+var VoidStock = /** @class */ (function (_super) {
+    __extends(VoidStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     */
+    function VoidStock(manager, element) {
+        var _this = _super.call(this, manager, element) || this;
+        _this.manager = manager;
+        _this.element = element;
+        element.classList.add('void-stock');
+        return _this;
+    }
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardToVoidStockSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
+    VoidStock.prototype.addCard = function (card, animation, settings) {
+        var _this = this;
+        var _a;
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        // center the element
+        var cardElement = this.getCardElement(card);
+        var originalLeft = cardElement.style.left;
+        var originalTop = cardElement.style.top;
+        cardElement.style.left = "".concat((this.element.clientWidth - cardElement.clientWidth) / 2, "px");
+        cardElement.style.top = "".concat((this.element.clientHeight - cardElement.clientHeight) / 2, "px");
+        if (!promise) {
+            console.warn("VoidStock.addCard didn't return a Promise");
+            promise = Promise.resolve(false);
+        }
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.remove) !== null && _a !== void 0 ? _a : true) {
+            return promise.then(function (result) {
+                _this.removeCard(card);
+                return result;
+            });
+        }
+        else {
+            cardElement.style.left = originalLeft;
+            cardElement.style.top = originalTop;
+            return promise;
+        }
+    };
+    return VoidStock;
+}(CardStock));
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
  * Needs cardWidth and cardHeight to be set in the card manager.
@@ -839,7 +1007,7 @@ var Deck = /** @class */ (function (_super) {
     __extends(Deck, _super);
     function Deck(manager, element, settings) {
         var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
@@ -856,7 +1024,8 @@ var Deck = /** @class */ (function (_super) {
         _this.thicknesses = (_a = settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
         _this.setCardNumber((_b = settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
         _this.autoUpdateCardNumber = (_c = settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
-        var shadowDirection = (_d = settings.shadowDirection) !== null && _d !== void 0 ? _d : 'bottom-right';
+        _this.autoRemovePreviousCards = (_d = settings.autoRemovePreviousCards) !== null && _d !== void 0 ? _d : true;
+        var shadowDirection = (_e = settings.shadowDirection) !== null && _e !== void 0 ? _e : 'bottom-right';
         var shadowDirectionSplit = shadowDirection.split('-');
         var xShadowShift = shadowDirectionSplit.includes('right') ? 1 : (shadowDirectionSplit.includes('left') ? -1 : 0);
         var yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
@@ -868,26 +1037,26 @@ var Deck = /** @class */ (function (_super) {
         else if (settings.cardNumber > 0) {
             console.warn("Deck is defined with ".concat(settings.cardNumber, " cards but no top card !"));
         }
-        if (settings.counter && ((_e = settings.counter.show) !== null && _e !== void 0 ? _e : true)) {
+        if (settings.counter && ((_f = settings.counter.show) !== null && _f !== void 0 ? _f : true)) {
             if (settings.cardNumber === null || settings.cardNumber === undefined) {
                 throw new Error("You need to set cardNumber if you want to show the counter");
             }
             else {
-                _this.createCounter((_f = settings.counter.position) !== null && _f !== void 0 ? _f : 'bottom', (_g = settings.counter.extraClasses) !== null && _g !== void 0 ? _g : 'round');
-                if ((_h = settings.counter) === null || _h === void 0 ? void 0 : _h.hideWhenEmpty) {
-                    _this.element.querySelector('.bga-cards-deck-counter').classList.add('hide-when-empty');
+                _this.createCounter((_g = settings.counter.position) !== null && _g !== void 0 ? _g : 'bottom', (_h = settings.counter.extraClasses) !== null && _h !== void 0 ? _h : 'round', settings.counter.counterId);
+                if ((_j = settings.counter) === null || _j === void 0 ? void 0 : _j.hideWhenEmpty) {
+                    _this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
                 }
             }
         }
-        _this.setCardNumber((_j = settings.cardNumber) !== null && _j !== void 0 ? _j : 52);
+        _this.setCardNumber((_k = settings.cardNumber) !== null && _k !== void 0 ? _k : 52);
         return _this;
     }
-    Deck.prototype.createCounter = function (counterPosition, extraClasses) {
+    Deck.prototype.createCounter = function (counterPosition, extraClasses, counterId) {
         var left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
         var top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
         this.element.style.setProperty('--bga-cards-deck-left', "".concat(left, "%"));
         this.element.style.setProperty('--bga-cards-deck-top', "".concat(top, "%"));
-        this.element.insertAdjacentHTML('beforeend', "\n            <div class=\"bga-cards-deck-counter ".concat(extraClasses, "\"></div>\n        "));
+        this.element.insertAdjacentHTML('beforeend', "\n            <div ".concat(counterId ? "id=\"".concat(counterId, "\"") : '', " class=\"bga-cards_deck-counter ").concat(extraClasses, "\"></div>\n        "));
     };
     /**
      * Get the the cards number.
@@ -917,23 +1086,36 @@ var Deck = /** @class */ (function (_super) {
             }
         });
         this.element.style.setProperty('--thickness', "".concat(thickness, "px"));
-        var counterDiv = this.element.querySelector('.bga-cards-deck-counter');
+        var counterDiv = this.element.querySelector('.bga-cards_deck-counter');
         if (counterDiv) {
             counterDiv.innerHTML = "".concat(cardNumber);
         }
     };
     Deck.prototype.addCard = function (card, animation, settings) {
-        var _a;
-        if (this.autoUpdateCardNumber && ((_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : true)) {
+        var _this = this;
+        var _a, _b;
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber + 1);
         }
-        return _super.prototype.addCard.call(this, card, animation, settings);
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        if ((_b = settings === null || settings === void 0 ? void 0 : settings.autoRemovePreviousCards) !== null && _b !== void 0 ? _b : this.autoRemovePreviousCards) {
+            promise.then(function () {
+                var previousCards = _this.getCards().slice(0, -1); // remove last cards
+                _this.removeCards(previousCards, { autoUpdateCardNumber: false });
+            });
+        }
+        return promise;
     };
-    Deck.prototype.cardRemoved = function (card) {
-        if (this.autoUpdateCardNumber) {
+    Deck.prototype.cardRemoved = function (card, settings) {
+        var _a;
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber - 1);
         }
-        _super.prototype.cardRemoved.call(this, card);
+        _super.prototype.cardRemoved.call(this, card, settings);
+    };
+    Deck.prototype.getTopCard = function () {
+        var cards = this.getCards();
+        return cards.length ? cards[cards.length - 1] : null;
     };
     return Deck;
 }(CardStock));
@@ -987,17 +1169,24 @@ var CardManager = /** @class */ (function () {
     CardManager.prototype.getCardElement = function (card) {
         return document.getElementById(this.getId(card));
     };
-    CardManager.prototype.removeCard = function (card) {
+    /**
+     * Remove a card.
+     *
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    CardManager.prototype.removeCard = function (card, settings) {
         var _a;
         var id = this.getId(card);
         var div = document.getElementById(id);
         if (!div) {
-            return;
+            return false;
         }
-        // if the card is in a stock, notify the stock about removal
-        (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card);
         div.id = "deleted".concat(id);
         div.remove();
+        // if the card is in a stock, notify the stock about removal
+        (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card, settings);
+        return true;
     };
     /**
      * Returns the stock containing the card.
@@ -1036,7 +1225,7 @@ var CardManager = /** @class */ (function () {
         var isVisible = visible !== null && visible !== void 0 ? visible : this.isCardVisible(card);
         element.dataset.side = isVisible ? 'front' : 'back';
         if ((_a = settings === null || settings === void 0 ? void 0 : settings.updateFront) !== null && _a !== void 0 ? _a : true) {
-            var updateFrontDelay = (_b = settings.updateFrontDelay) !== null && _b !== void 0 ? _b : 500;
+            var updateFrontDelay = (_b = settings === null || settings === void 0 ? void 0 : settings.updateFrontDelay) !== null && _b !== void 0 ? _b : 500;
             if (!isVisible && updateFrontDelay > 0) {
                 setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupFrontDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('front')[0]); }, updateFrontDelay);
             }
@@ -1045,7 +1234,7 @@ var CardManager = /** @class */ (function () {
             }
         }
         if ((_e = settings === null || settings === void 0 ? void 0 : settings.updateBack) !== null && _e !== void 0 ? _e : false) {
-            var updateBackDelay = (_f = settings.updateBackDelay) !== null && _f !== void 0 ? _f : 0;
+            var updateBackDelay = (_f = settings === null || settings === void 0 ? void 0 : settings.updateBackDelay) !== null && _f !== void 0 ? _f : 0;
             if (isVisible && updateBackDelay > 0) {
                 setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupBackDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('back')[0]); }, updateBackDelay);
             }
@@ -1097,6 +1286,27 @@ var CardManager = /** @class */ (function () {
         var _a;
         return (_a = this.settings) === null || _a === void 0 ? void 0 : _a.cardHeight;
     };
+    /**
+     * @returns the class to apply to selectable cards. Default 'bga-cards_selectable-card'.
+     */
+    CardManager.prototype.getSelectableCardClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectableCardClass) === undefined ? 'bga-cards_selectable-card' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectableCardClass;
+    };
+    /**
+     * @returns the class to apply to selectable cards. Default 'bga-cards_disabled-card'.
+     */
+    CardManager.prototype.getUnselectableCardClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.unselectableCardClass) === undefined ? 'bga-cards_disabled-card' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.unselectableCardClass;
+    };
+    /**
+     * @returns the class to apply to selected cards. Default 'bga-cards_selected-card'.
+     */
+    CardManager.prototype.getSelectedCardClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectableCardClass) === undefined ? 'bga-cards_selected-card' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectableCardClass;
+    };
     return CardManager;
 }());
 function sortFunction() {
@@ -1141,12 +1351,8 @@ var LineFitPositionStock = /** @class */ (function (_super) {
         return _super.call(this, manager, element, settings, function (element, cards, lastCard, stock) {
             var margin = 8;
             var totalCardWidth = cards.length * manager.getCardWidth();
-            console.log('totalCardWidth : ' + totalCardWidth);
             var totalMarginWidth = (cards.length - 1) * margin;
-            console.log('totalMarginWidth : ' + totalMarginWidth);
             var totalWidth = totalCardWidth + totalMarginWidth;
-            console.log('totalWidth : ' + totalWidth);
-            console.log('clientWidth : ' + element.clientWidth);
             var leftOffset = 0;
             var leftForSingleCard = manager.getCardWidth() + margin;
             if (totalWidth > element.clientWidth) {
@@ -1163,6 +1369,12 @@ var LineFitPositionStock = /** @class */ (function (_super) {
             });
         }) || this;
     }
+    LineFitPositionStock.prototype.cardRemoved = function (card) {
+        var cardDiv = this.getCardElement(card);
+        cardDiv.style.left = null;
+        cardDiv.classList.remove('to-discard');
+        _super.prototype.cardRemoved.call(this, card);
+    };
     return LineFitPositionStock;
 }(ManualPositionStock));
 var cardWidth = 165;
@@ -1183,13 +1395,16 @@ var CardsManager = /** @class */ (function (_super) {
             },
             isCardVisible: function (card) { return !!card.type; },
             cardWidth: cardWidth,
-            cardHeight: cardHeight
+            cardHeight: cardHeight,
         }) || this;
         _this.quibblesGame = quibblesGame;
+        _this.playerStocks = [];
+        _this.playerCollections = [];
+        _this.selectedSets = null;
         return _this;
     }
     CardsManager.prototype.setUp = function (gameData) {
-        this.display = new LineFitPositionStock(this, $('card-display'), {});
+        this.display = new LineFitPositionStock(this, $('card-display'), { sort: sortFunction('type') });
         this.deck = new Deck(this, $('card-deck'), {
             autoUpdateCardNumber: false,
             counter: { show: true, position: "center", extraClasses: "quibbles-counter" },
@@ -1199,28 +1414,125 @@ var CardsManager = /** @class */ (function (_super) {
         this.discard = new Deck(this, $('card-discard'), {
             autoUpdateCardNumber: true,
             counter: { show: true, position: "center", extraClasses: "quibbles-counter" },
-            cardNumber: 0
+            cardNumber: 0,
         });
         this.discard.addCards(gameData.discard);
         this.display.addCards(gameData.display);
-        if (!this.quibblesGame.isReadOnly()) {
-            this.playerHand = new LineFitPositionStock(this, $('player-hand'), {});
-            for (var playersKey in gameData.players) {
-                if (gameData.players[playersKey].self) {
-                    this.playerHand.addCards(gameData.players[playersKey].hand);
-                }
+        for (var playersKey in gameData.players) {
+            var playerId = Number(playersKey);
+            if (this.quibblesGame.getPlayerId() === playerId &&
+                this.quibblesGame.getPlayer(playerId).self &&
+                !this.quibblesGame.isReadOnly()) {
+                this.playerHand = new LineFitPositionStock(this, $('player-hand'), { sort: sortFunction('type') });
+                this.playerHand.addCards(gameData.players[playersKey].hand);
             }
+            else {
+                this.playerStocks[playerId] = new VoidStock(this, $("playerhand-stock-".concat(playerId)));
+            }
+            this.playerCollections[playerId] = new LineFitPositionStock(this, $("player-collection-".concat(playerId)), { sort: sortFunction('type') });
+            this.playerCollections[playerId].addCards(gameData.players[playersKey].collection);
         }
+    };
+    CardsManager.prototype.setHandCardsSelectable = function (selectionMode, maxTotalValue) {
+        var _this = this;
+        this.playerHand.setSelectionMode(selectionMode);
+        if (selectionMode != 'none') {
+            this.playerHand.onSelectionChange = (function (selection) {
+                var selectedValue = selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0);
+                var remainingValue = maxTotalValue - selectedValue;
+                var selectableCards = _this.playerHand.getCards()
+                    .filter(function (card) { return selection.includes(card) || Number(card.type) <= remainingValue; });
+                _this.playerHand.setSelectableCards(selectableCards);
+            });
+        }
+    };
+    CardsManager.prototype.setDisplayCardsSelectableSets = function (selectionMode, totalDiscardValue) {
+        var _this = this;
+        this.selectedSets = [];
+        this.display.setSelectionMode(selectionMode);
+        if (selectionMode != 'none') {
+            this.display.setSelectableCards(this.display.getCards().filter(function (card) { return Number(card.type) < totalDiscardValue; }));
+            this.display.onSelectionChange = (function (selection) {
+                console.log(selection);
+                var selectedValue = selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0);
+                var remainingValue = totalDiscardValue - selectedValue;
+                if (remainingValue === 0) {
+                    _this.selectedSets.push(selection.map(function (card) { return card.id; }));
+                    _this.playerHand.addCards(selection);
+                    _this.display.setSelectableCards(_this.display.getCards().filter(function (card) { return Number(card.type) < totalDiscardValue; }));
+                }
+                else {
+                    var selectableCards = _this.display.getCards()
+                        .filter(function (card) { return selection.includes(card) || (Number(card.type) <= remainingValue && Number(card.type) < totalDiscardValue); });
+                    _this.display.setSelectableCards(selectableCards);
+                }
+            });
+        }
+    };
+    CardsManager.prototype.setDisplayCardsSelectableSingle = function (selectionMode, totalDiscardValue) {
+        var _this = this;
+        this.selectedSets = [];
+        this.display.setSelectionMode(selectionMode);
+        if (selectionMode != 'none') {
+            this.display.setSelectableCards(this.display.getCards().filter(function (card) { return Number(card.type) === totalDiscardValue; }));
+            this.display.onSelectionChange = (function (selection) {
+                if (selection.length == 1) {
+                    _this.selectedSets.push(selection.map(function (card) { return card.id; }));
+                    _this.playerHand.addCards(selection);
+                }
+            });
+        }
+    };
+    CardsManager.prototype.getSelectedPlayerHandCards = function () {
+        return this.playerHand.getSelection();
+    };
+    CardsManager.prototype.discardCards = function (cards) {
+        this.discard.addCards(cards, {}, { visible: true, updateInformations: true });
+    };
+    CardsManager.prototype.discardCardsFromPlayer = function (cards, playerId) {
+        this.discard.addCards(cards, { fromStock: this.quibblesGame.getPlayer(playerId).self ? this.playerHand : this.playerStocks[playerId] }, { visible: true, updateInformations: true });
+    };
+    CardsManager.prototype.addCardsToDisplayFromDeck = function (cards) {
+        this.display.addCards(cards, { fromStock: this.deck });
+    };
+    CardsManager.prototype.addCardsToDisplay = function (cards) {
+        this.display.addCards(cards);
+    };
+    CardsManager.prototype.addCardsToPlayerHand = function (playerId, cards) {
+        if (this.quibblesGame.getPlayerId() === playerId &&
+            this.quibblesGame.getPlayer(playerId).self &&
+            !this.quibblesGame.isReadOnly()) {
+            this.playerHand.addCards(cards);
+        }
+        else {
+            this.playerStocks[playerId].addCards(cards);
+        }
+    };
+    CardsManager.prototype.setCardsToDiscard = function (cards) {
+        var _this = this;
+        cards.map(function (card) { return _this.getCardElement(card); })
+            .forEach(function (card) { return card.classList.add('to-discard'); });
+    };
+    CardsManager.prototype.unsetCardsToDiscard = function () {
+        var _this = this;
+        this.playerHand.getCards().map(function (card) { return _this.getCardElement(card); })
+            .forEach(function (card) { return card.classList.remove('to-discard'); });
+    };
+    CardsManager.prototype.addCardToCollection = function (cardCollected, playerId) {
+        this.playerCollections[playerId].addCard(cardCollected);
     };
     return CardsManager;
 }(CardManager));
 var PlayerManager = /** @class */ (function () {
     function PlayerManager(game) {
+        this.game = game;
+        this.handCounters = [];
     }
     PlayerManager.prototype.setUp = function (gameData) {
         var playerAreas = [];
         for (var playerId in gameData.players) {
             var player = gameData.players[playerId];
+            this.createPlayerPanels(player);
             var playerArea = this.createPlayerArea(player);
             if (player.self) {
                 playerAreas.unshift(playerArea);
@@ -1230,12 +1542,27 @@ var PlayerManager = /** @class */ (function () {
             }
         }
         playerAreas.forEach(function (playerArea) { return dojo.place(playerArea, "quibbles-ui-row-4"); });
+        this.game.setTooltipToClass('playerhand-counter', _('Number of cards in hand'));
+    };
+    PlayerManager.prototype.setHandCounter = function (playerId, handCount) {
+        this.handCounters[playerId].toValue(handCount);
     };
     PlayerManager.prototype.createPlayerArea = function (player) {
-        return "<div id=\"player-area-".concat(player.id, "\" class=\"player-area whiteblock\">\n                    <div class=\"quibbles-title-wrapper\">\n                        <h2 class=\"quibbles-title\" style=\"background-color: #").concat(player.color, ";\">").concat(player.name, "</h2>\n                    </div>\n                </div>");
+        return "<div id=\"player-area-".concat(player.id, "\" class=\"player-area whiteblock\">\n                    <div class=\"quibbles-title-wrapper\">\n                        <h2 class=\"quibbles-title\" style=\"background-color: #").concat(player.color, ";\">").concat(player.name).concat(_("'s Collection"), "</h2>\n                    </div>\n                    <div id=\"player-collection-").concat(player.id, "\" class=\"player-collection\"></div>\n                </div>");
+    };
+    PlayerManager.prototype.createPlayerPanels = function (player) {
+        var playerId = Number(player.id);
+        var html = "<div class=\"counters\">\n                <div id=\"playerhand-counter-wrapper-".concat(player.id, "\" class=\"playerhand-counter\">\n                    <div class=\"player-hand-card\"></div> \n                    <span id=\"playerhand-counter-").concat(player.id, "\"></span>\n                    <div id=\"playerhand-stock-").concat(player.id, "\"></div>\n                </div>\n            </div><div class=\"counters\">");
+        dojo.place(html, "player_board_".concat(player.id));
+        var handCounter = new ebg.counter();
+        handCounter.create("playerhand-counter-".concat(player.id));
+        handCounter.setValue(player.handCount);
+        this.handCounters[playerId] = handCounter;
     };
     return PlayerManager;
 }());
+var ANIMATION_MS = 500;
+var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
 var Quibbles = /** @class */ (function () {
     function Quibbles() {
         this.cardsManager = new CardsManager(this);
@@ -1256,9 +1583,10 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.setup = function (gamedatas) {
         log("Starting game setup");
         this.gamedatas = gamedatas;
-        this.cardsManager.setUp(gamedatas);
         this.playerManager.setUp(gamedatas);
+        this.cardsManager.setUp(gamedatas);
         log('gamedatas', gamedatas);
+        this.setupNotifications();
         log("Ending game setup");
     };
     ///////////////////////////////////////////////////
@@ -1269,24 +1597,114 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.onEnteringState = function (stateName, args) {
         log('Entering state: ' + stateName, args.args);
         switch (stateName) {
-            //TODO
+            case 'playerTurnTake':
+                this.onEnteringPlayerTurnTake();
+                break;
+            case 'playerTurnTakeConfirm':
+                this.onEnteringPlayerTurnTakeConfirm(args.args);
+                break;
+            case 'playerTurnAddCollection':
+                this.onEnteringPlayerTurnAddCollection(args.args);
+                break;
+        }
+    };
+    Quibbles.prototype.onEnteringPlayerTurnTake = function () {
+        if (this.isCurrentPlayerActive()) {
+            var maxTotalValue = 6;
+            this.cardsManager.setHandCardsSelectable('multiple', maxTotalValue);
+        }
+    };
+    Quibbles.prototype.onEnteringPlayerTurnTakeConfirm = function (args) {
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.setCardsToDiscard(args.cardsToDiscard);
+            if (args.cardsToDiscard.length === 1) {
+                this.gamedatas.gamestate.descriptionmyturn = this.gamedatas.gamestate.descriptionmyturn + '<br />' + _('Select sets of cards to take that total:') + '&nbsp;' + args.totalDiscardValue + '<br />';
+                this.updatePageTitle();
+                this.cardsManager.setDisplayCardsSelectableSets('multiple', args.totalDiscardValue);
+            }
+            else {
+                this.gamedatas.gamestate.descriptionmyturn = this.gamedatas.gamestate.descriptionmyturn + '<br />' + _('Select cards to take with value:') + '&nbsp;' + args.totalDiscardValue + '<br />';
+                this.updatePageTitle();
+                this.cardsManager.setDisplayCardsSelectableSingle('single', args.totalDiscardValue);
+            }
+        }
+    };
+    Quibbles.prototype.onEnteringPlayerTurnAddCollection = function (args) {
+        if (this.isCurrentPlayerActive()) {
+            var canAddToCollection = this.findCollectionAddCards(args.playerHandTypeCount);
+            if (canAddToCollection.length === 0) {
+                this.gamedatas.gamestate.descriptionmyturn = _("You can't add a card to your collection");
+            }
+            this.gamedatas.gamestate.descriptionmyturn += '<br />';
+            this.updatePageTitle();
         }
     };
     Quibbles.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
-            //TODO
+            case 'playerTurnTake':
+                this.onLeavingPlayerTurnTake();
+                break;
+            case 'playerTurnTakeConfirm':
+                this.onLeavingPlayerTurnTakeConfirm();
+                break;
         }
+    };
+    Quibbles.prototype.onLeavingPlayerTurnTake = function () {
+        this.cardsManager.setHandCardsSelectable('none');
+    };
+    Quibbles.prototype.onLeavingPlayerTurnTakeConfirm = function () {
+        this.cardsManager.unsetCardsToDiscard();
+        this.cardsManager.setDisplayCardsSelectableSets('none');
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
     //                        action status bar (ie: the HTML links in the status bar).
     //
     Quibbles.prototype.onUpdateActionButtons = function (stateName, args) {
+        var _this = this;
         if (this.isCurrentPlayerActive()) {
             switch (stateName) {
-                //TODO
+                case 'playerTurn':
+                    this.addActionButton('playerTurnTake', _("TAKE"), function () { return _this.chooseAction("take"); });
+                    this.addActionButton('playerTurnPass', _("PASS"), function () { return _this.chooseAction("pass"); });
+                    break;
+                case 'playerTurnTake':
+                    this.addActionButton('takeConfirmDiscard', _("Confirm Discard"), function () { return _this.takeConfirmDiscard(); });
+                    break;
+                case 'playerTurnTakeConfirm':
+                    this.addActionButton('takeConfirm', _("Confirm Take"), function () { return _this.takeConfirm(); });
+                    break;
+                case 'playerTurnAddCollection':
+                    var cardsThatCanBeAdded = this.findCollectionAddCards(args.playerHandTypeCount);
+                    if (cardsThatCanBeAdded.length > 0) {
+                        cardsThatCanBeAdded.forEach(function (cardThatCanBeAdded) { return _this.addActionButton("addCardToCollection".concat(cardThatCanBeAdded.card_type), _("Add") + " ".concat(cardThatCanBeAdded.card_type), function () { return _this.addCardToCollection(Number(cardThatCanBeAdded.card_type)); }); });
+                    }
+                    this.addActionButton('endTurn', _("End Turn"), function () { return _this.endTurn(); });
+            }
+            if (['playerTurnTake', 'playerTurnTakeConfirm'].includes(stateName) && args.canCancelMoves) {
+                this.addActionButton("undoLastMoves", _("Undo last moves"), function () { return _this.undoLastMoves(); }, null, null, 'gray');
             }
         }
+    };
+    Quibbles.prototype.undoLastMoves = function () {
+        this.takeAction('undoLastMoves');
+    };
+    Quibbles.prototype.chooseAction = function (chosenAction) {
+        this.takeAction("chooseAction", { chosenAction: chosenAction });
+    };
+    Quibbles.prototype.takeConfirmDiscard = function () {
+        var cardIds = this.cardsManager.getSelectedPlayerHandCards().map(function (card) { return card.id; });
+        this.takeAction("takeConfirmDiscard", { cardIds: JSON.stringify(cardIds) });
+    };
+    Quibbles.prototype.takeConfirm = function () {
+        var selectedSets = this.cardsManager.selectedSets;
+        this.takeAction("takeConfirm", { selectedSets: JSON.stringify(selectedSets) });
+    };
+    Quibbles.prototype.endTurn = function () {
+        this.takeAction("endTurn");
+    };
+    Quibbles.prototype.addCardToCollection = function (type) {
+        this.takeAction("addCardToCollection", { type: type, cardIdToDiscard: null });
     };
     ///////////////////////////////////////////////////
     //// Utility methods
@@ -1303,11 +1721,25 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.takeAction = function (action, data) {
         data = data || {};
         data.lock = true;
-        this.ajaxcall("/elawa/elawa/".concat(action, ".html"), data, this, function () { });
+        this.ajaxcall("/quibbles/quibbles/".concat(action, ".html"), data, this, function () { });
     };
     Quibbles.prototype.takeNoLockAction = function (action, data) {
         data = data || {};
-        this.ajaxcall("/elawa/elawa/".concat(action, ".html"), data, this, function () { });
+        this.ajaxcall("/quibbles/quibbles/".concat(action, ".html"), data, this, function () { });
+    };
+    Quibbles.prototype.setTooltip = function (id, html) {
+        this.addTooltipHtml(id, html, TOOLTIP_DELAY);
+    };
+    Quibbles.prototype.setTooltipToClass = function (className, html) {
+        this.addTooltipHtmlToClass(className, html, TOOLTIP_DELAY);
+    };
+    Quibbles.prototype.findCollectionAddCards = function (typeCounts) {
+        return Object.values(typeCounts)
+            .filter(function (typeCount) { return typeCount.count >= Number(typeCount.card_type); });
+    };
+    Quibbles.prototype.setScore = function (playerId, score) {
+        var _a;
+        (_a = this.scoreCtrl[playerId]) === null || _a === void 0 ? void 0 : _a.toValue(score);
     };
     ///////////////////////////////////////////////////
     //// Reaction to cometD notifications
@@ -1324,12 +1756,46 @@ var Quibbles = /** @class */ (function () {
         var _this = this;
         log('notifications subscriptions setup');
         var notifs = [
-        // TODO
+            ['cancelLastMoves', ANIMATION_MS],
+            ['takeConfirmed', ANIMATION_MS],
+            ['displayDiscarded', ANIMATION_MS],
+            ['displayRefilled', ANIMATION_MS],
+            ['cardAddedToCollection', ANIMATION_MS],
         ];
         notifs.forEach(function (notif) {
             dojo.subscribe(notif[0], _this, "notif_".concat(notif[0]));
             _this.notifqueue.setSynchronous(notif[0], notif[1]);
         });
+    };
+    Quibbles.prototype.notif_cancelLastMoves = function (notif) {
+        log('notif_cancelLastMoves: ');
+        log(notif);
+        this.cardsManager.addCardsToDisplay(notif.args.displayCards);
+    };
+    Quibbles.prototype.notif_takeConfirmed = function (notif) {
+        log('notif_takeConfirmed: ');
+        log(notif);
+        this.cardsManager.discardCards(notif.args.cardsDiscarded);
+        this.cardsManager.addCardsToPlayerHand(notif.args.playerId, notif.args.cardsTaken);
+        this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
+    };
+    Quibbles.prototype.notif_displayDiscarded = function (notif) {
+        log('notif_displayDiscarded: ');
+        log(notif);
+        this.cardsManager.discardCards(notif.args.cardsDiscarded);
+    };
+    Quibbles.prototype.notif_displayRefilled = function (notif) {
+        log('notif_displayRefilled: ');
+        log(notif);
+        this.cardsManager.addCardsToDisplayFromDeck(notif.args.displayCards);
+    };
+    Quibbles.prototype.notif_cardAddedToCollection = function (notif) {
+        log('notif_cardAddedToCollection: ');
+        log(notif);
+        this.setScore(notif.args.playerId, notif.args.playerScore);
+        this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
+        this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
+        this.cardsManager.addCardToCollection(notif.args.cardCollected, notif.args.playerId);
     };
     return Quibbles;
 }());

@@ -129,6 +129,10 @@ class GameState {
 
     function checkPossibleAction($action) {
     }
+
+    function jumpToState($state) {
+
+    }
 }
 
 class BgaUserException extends Exception {
@@ -375,6 +379,28 @@ class Deck {
 
     public function pickCardsForLocation(int $numberOfCards, string $fromLocation, string $toLocation, int $location_arg = 0) {}
 
+    public function moveCards(array $cardIds, string $location, ?int $location_arg)
+    {
+    }
+
+    public function moveCard(int $cardId, string $location, int $location_arg)
+    {
+    }
+
+    public function getCards(array $cardIds): array {
+        return [];
+    }
+
+    public function getCardsOfTypeInLocation(string $type, int $type_arg = null, string $ZONE_PLAYER_HAND, int $activePlayerId): array
+    {
+        return [];
+    }
+
+    public function getCard(int $cardId) : object
+    {
+
+    }
+
 }
 
 class GUser {
@@ -391,6 +417,8 @@ define('AT_bool', 0);
 define('AT_posint', 0);
 define('AT_numberlist', 0);
 define('AT_base64', 0);
+define('AT_alphanum', 0);
+define('AT_json', 0);
 class APP_GameAction {
     function setAjaxMode() {}
 

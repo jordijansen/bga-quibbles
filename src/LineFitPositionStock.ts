@@ -6,12 +6,8 @@ class LineFitPositionStock<T> extends ManualPositionStock<T> {
         super(manager, element, settings, (element, cards, lastCard, stock) => {
             const margin = 8;
             const totalCardWidth = cards.length * manager.getCardWidth();
-            console.log('totalCardWidth : ' + totalCardWidth)
             const totalMarginWidth = (cards.length -  1) * margin;
-            console.log('totalMarginWidth : ' + totalMarginWidth)
             const totalWidth = totalCardWidth + totalMarginWidth;
-            console.log('totalWidth : ' + totalWidth)
-            console.log('clientWidth : ' + element.clientWidth)
 
             let leftOffset = 0;
             let leftForSingleCard = manager.getCardWidth() + margin;
@@ -30,5 +26,12 @@ class LineFitPositionStock<T> extends ManualPositionStock<T> {
             });
 
         });
+    }
+
+    cardRemoved(card: T) {
+        const cardDiv = this.getCardElement(card);
+        cardDiv.style.left = null;
+        cardDiv.classList.remove('to-discard')
+        super.cardRemoved(card);
     }
 }

@@ -112,12 +112,13 @@ body > .card {
   user-select: none;
 }
 
-.card-stock.selectable .card:not(.disabled) {
+.card-stock .card.bga-cards_selectable-card:not(.bga-cards_disabled-card) {
   cursor: pointer;
 }
 
-.card-stock .card.selectable:not(.disabled) {
-  cursor: pointer;
+.card-stock .card.bga-cards_disabled-card {
+  cursor: not-allowed;
+  filter: contrast(0.6);
 }
 
 .card-stock.line-stock {
@@ -216,11 +217,11 @@ body > .card {
   visibility: hidden;
 }
 
-.card-stock.deck[data-empty=true] .bga-cards-deck-counter.hide-when-empty {
+.card-stock.deck[data-empty=true] .bga-cards_deck-counter.hide-when-empty {
   display: none;
 }
 
-.bga-cards-deck-counter {
+.bga-cards_deck-counter {
   --bga-cards-deck-counter-size: 20px;
   position: absolute;
   z-index: 1;
@@ -231,9 +232,11 @@ body > .card {
   display: flex;
   justify-content: center;
   align-items: center;
+  user-select: none;
+  pointer-events: none;
 }
 
-.bga-cards-deck-counter.round {
+.bga-cards_deck-counter.round {
   color: black;
   background: white;
   border-radius: 50%;
@@ -241,13 +244,13 @@ body > .card {
   font-size: 14px;
 }
 
-.bga-cards-deck-counter.text-shadow {
+.bga-cards_deck-counter.text-shadow {
   color: white;
   text-shadow: 0 0 1px black, 0 0 2px black, 0 0 3px black, 0 0 4px black;
   font-size: 20px;
 }
 
-.bga-cards-deck-counter.hidden {
+.bga-cards_deck-counter.hidden {
   display: none;
 }
 
@@ -283,6 +286,17 @@ html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   border-radius: 10px;
 }
 
+.player-hand-card {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-image: url("img/hand-cards-icon.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle;
+}
+
 .quibbles-card {
   display: inline-block;
   position: relative;
@@ -290,9 +304,26 @@ html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   height: 257px;
   border-radius: 12px;
 }
-.quibbles-card.disabled {
-  cursor: not-allowed;
+.quibbles-card.bga-cards_selectable-card .card-side {
+  outline: 4px rgba(80, 200, 255, 0.75) solid;
+  cursor: pointer;
+}
+.quibbles-card.bga-cards_selected-card .card-side {
+  outline: 4px rgba(124, 252, 0, 0.75) solid !important;
+  cursor: pointer;
+}
+.quibbles-card.to-discard .card-side {
   filter: contrast(0.6);
+}
+.quibbles-card.to-discard .card-side::before {
+  display: inline-block;
+  width: 60px;
+  height: 84px;
+  margin-left: 52.5px;
+  margin-top: 86.5px;
+  content: "";
+  background: url("img/recycle-bin-icon.png") no-repeat 0 0;
+  background-size: 100%;
 }
 .quibbles-card .card-sides .card-side {
   border-radius: 12px;
@@ -710,17 +741,18 @@ html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   justify-content: center;
 }
 .quibbles .quibbles-title-wrapper .quibbles-title {
+  font-size: 18px;
+  padding: 10px;
   display: inline-block;
   border-radius: 5px;
-  padding: 10px;
   color: white;
   text-align: center;
   text-transform: uppercase;
 }
-.quibbles .bga-cards-deck-counter.quibbles-counter {
+.quibbles .quibbles-counter {
+  --bga-cards-deck-counter-size: 40px;
   color: white;
   text-align: center;
-  padding: 5px;
   border-radius: 25px;
   background: black;
   opacity: 0.8;
@@ -761,6 +793,9 @@ html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
 }
 .quibbles #quibbles-ui-row-4 .player-area {
   width: calc(50% - 30px);
+}
+.quibbles #quibbles-ui-row-4 .player-area .player-collection {
+  height: 257px;
 }
 
 /*# sourceMappingURL=quibbles.css.map */

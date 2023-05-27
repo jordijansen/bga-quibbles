@@ -19,16 +19,26 @@
 
 require_once(APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
+require_once('modules/php/Constants.inc.php');
+
+require_once('modules/php/objects/Undo.php');
+require_once('modules/php/objects/Take.php');
+
 require_once('modules/php/framework/Card.php');
 require_once('modules/php/framework/AbstractCardManager.php');
 
 require_once('modules/php/CardManager.php');
+require_once('modules/php/ActionTrait.php');
 require_once('modules/php/StateTrait.php');
 require_once('modules/php/ArgsTrait.php');
+require_once('modules/php/UtilsTrait.php');
+
 class Quibbles extends Table
 {
+    use ActionTrait;
     use StateTrait;
     use ArgsTrait;
+    use UtilsTrait;
 
     private CardManager $cardManager;
 
@@ -41,15 +51,11 @@ class Quibbles extends Table
         //  the corresponding ID in gameoptions.inc.php.
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();
-        
-        self::initGameStateLabels( array( 
-            //    "my_first_global_variable" => 10,
-            //    "my_second_global_variable" => 11,
-            //      ...
-            //    "my_first_game_variant" => 100,
-            //    "my_second_game_variant" => 101,
-            //      ...
-        ) );
+
+        self::initGameStateLabels([
+            CANCELLABLE_MOVES => CANCELLABLE_MOVES,
+            DISCARDED_HAND_CARDS => DISCARDED_HAND_CARDS
+        ]);
 
         $this->cardManager = new CardManager(self::getNew("module.common.deck"));
 	}
@@ -137,9 +143,10 @@ class Quibbles extends Table
 
         foreach($result['players'] as $playerId => &$player) {
             $player['handCount'] = intval($this->cardManager->countCardsInLocation('hand', $playerId));
+            $player['collection'] = $this->cardManager->getCardsInLocation(ZONE_PLAYER_AREA, $playerId);
              if ($currentPlayerId == $playerId) {
                  $player['self'] = true;
-                 $player['hand'] = $this->cardManager->getCardsInLocation(ZONE_PLAYER_HAND, $currentPlayerId);
+                 $player['hand'] = $this->cardManager->getCardsInLocation(ZONE_PLAYER_HAND, $playerId);
              } else {
                  $player['self'] = false;
              }

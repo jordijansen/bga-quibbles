@@ -76,18 +76,62 @@ $basicGameStates = [
 $playerActionsGameStates = [
     ST_PLAYER_TURN_ID => [
         "name" => ST_PLAYER_TURN,
-        "description" => clienttranslate('${actplayer} must PLAY or PASS'),
-        "descriptionmyturn" => clienttranslate('${you} must PLAY or PASS'),
+        "description" => clienttranslate('${actplayer} must TAKE or PASS'),
+        "descriptionmyturn" => clienttranslate('${you} must TAKE or PASS'),
         "type" => "activeplayer",
-        "args" => "argPlayerTurn",
+        "action" => "stPlayerTurn",
         "possibleactions" => [
-            ACT_PLAY,
-            ACT_PASS
+            ACT_CHOOSE_ACTION,
+        ],
+        "transitions" => [
+            ACT_TAKE => ST_PLAYER_TURN_TAKE_ID,
+        ]
+    ],
+    ST_PLAYER_TURN_TAKE_ID => [
+        "name" => ST_PLAYER_TURN_TAKE,
+        "description" => clienttranslate('TAKE: ${actplayer} must select between 1 - 6 cards from their hand with a total value of 6 or less to discard'),
+        "descriptionmyturn" => clienttranslate('TAKE: ${you} must select between 1 - 6 cards from your hand with a total value of 6 or less to discard'),
+        "type" => "activeplayer",
+        "args" => "argPlayerTurnTake",
+        "possibleactions" => [
+            ACT_TAKE_CONFIRM_DISCARD,
+            ACT_CANCEL,
+        ],
+        "transitions" => [
+            ACT_TAKE_CONFIRM_DISCARD => ST_PLAYER_TURN_TAKE_CONFIRM_ID,
+            ACT_CANCEL => ST_PLAYER_TURN_ID
+        ]
+    ],
+    ST_PLAYER_TURN_TAKE_CONFIRM_ID => [
+        "name" => ST_PLAYER_TURN_TAKE_CONFIRM,
+        "description" => clienttranslate('TAKE: ${actplayer} must choose card(s) to take from the display'),
+        "descriptionmyturn" => clienttranslate('TAKE: ${you} must choose card(s) to take from the display'),
+        "type" => "activeplayer",
+        "args" => "argPlayerTurnTakeConfirm",
+        "possibleactions" => [
+            ACT_CONFIRM,
+            ACT_CANCEL,
+        ],
+        "transitions" => [
+            ACT_CONFIRM => ST_PLAYER_TURN_ADD_COLLECTION_ID,
+            ACT_CANCEL => ST_PLAYER_TURN_ID
+        ]
+    ],
+
+    ST_PLAYER_TURN_ADD_COLLECTION_ID => [
+        "name" => ST_PLAYER_TURN_ADD_COLLECTION,
+        "description" => clienttranslate('${actplayer} may add a card to their collection'),
+        "descriptionmyturn" => clienttranslate('${you} may add a card to your collection'),
+        "type" => "activeplayer",
+        "args" => "argPlayerTurnAddCollection",
+        "possibleactions" => [
+            ACT_END_TURN,
+            ACT_ADD_COLLECTION
         ],
         "transitions" => [
             ST_NEXT_PLAYER => ST_NEXT_PLAYER_ID
         ]
-    ]
+    ],
 ];
 
 $gameGameStates = [

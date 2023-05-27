@@ -76,20 +76,43 @@ $quibbles-color-roze: #ece1ec;
 $quibbles-color-purple: #7d347f;
 
 @mixin selectable {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
-    animation: crypt-pulse 2s infinite;
-    outline: 4px rgba(80, 200, 255, 0.75) solid;
-    cursor: pointer;
+    &.bga-cards_selectable-card {
+        .card-side {
+            outline: 4px rgba(80, 200, 255, 0.75) solid;
+            cursor: pointer;
+        }
+    }
 }
 
 @mixin selected {
-    outline: 4px rgba(124, 252, 0, 0.75) solid !important;
-    cursor: pointer;
+    &.bga-cards_selected-card {
+        .card-side {
+            outline: 4px rgba(124, 252, 0, 0.75) solid !important;
+            cursor: pointer;
+        }
+
+    }
 }
 
-@mixin invalid {
-    outline: 4px rgba(255, 0, 0, 0.75) solid !important;
+@mixin to-discard {
+    &.to-discard {
+        .card-side {
+            filter: contrast(0.6);
+
+            &::before {
+                display: inline-block;
+                width: 60px;
+                height: 84px;
+                margin-left: calc(($card-width / 2) - 30px);
+                margin-top: calc(($card-height / 2) - 42px);
+                content: "";
+                background: url("img/recycle-bin-icon.png") no-repeat 0 0;
+                background-size: 100%;
+            }
+        }
+    }
 }
+
 @mixin quibbles-card-sprites($number, $max) {
     .front[data-number="#{$number}"] {
         background-image: url("img/cards_#{$number}.png");
@@ -110,6 +133,17 @@ html, .mode_3d #game_play_area_background {
     }
 }
 
+.player-hand-card {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('img/hand-cards-icon.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+}
+
 .quibbles-card {
     display: inline-block;
     position: relative;
@@ -117,10 +151,9 @@ html, .mode_3d #game_play_area_background {
     height: $card-height;
     border-radius: 12px;
 
-    &.disabled {
-        cursor: not-allowed;
-        filter: contrast(0.6);
-    }
+    @include selectable();
+    @include selected();
+    @include to-discard();
 
     .card-sides {
         .card-side {
@@ -156,24 +189,23 @@ html, .mode_3d #game_play_area_background {
         justify-content: center;
 
         .quibbles-title {
-            display:inline-block;
-            border-radius: 5px;
+            font-size: 18px;
             padding: 10px;
+            display: inline-block;
+            border-radius: 5px;
             color: white;
             text-align: center;
             text-transform: uppercase;
         }
     }
 
-    .bga-cards-deck-counter {
-        &.quibbles-counter {
-            color: white;
-            text-align: center;
-            padding: 5px;
-            border-radius: 25px;
-            background: black;
-            opacity: 0.8;
-        }
+    .quibbles-counter {
+        --bga-cards-deck-counter-size: 40px;
+        color: white;
+        text-align: center;
+        border-radius: 25px;
+        background: black;
+        opacity: 0.8;
     }
 
     .quibbles-ui-row {
@@ -224,6 +256,9 @@ html, .mode_3d #game_play_area_background {
 
         .player-area {
             width: calc(50% - 30px);
+            .player-collection {
+                height: $card-height;
+            }
         }
     }
 }

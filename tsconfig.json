@@ -25,6 +25,8 @@
     "node_modules/bga-cards/src/animations.ts",
     "node_modules/bga-cards/src/stocks/card-stock.ts",
     "node_modules/bga-cards/src/stocks/manual-position-stock.ts",
+    "node_modules/bga-cards/src/stocks/all-visible-deck.ts",
+    "node_modules/bga-cards/src/stocks/void-stock.ts",
     "node_modules/bga-cards/src/stocks/deck.ts",
     "node_modules/bga-cards/src/card-manager.ts",
     "node_modules/bga-cards/src/sort.ts",

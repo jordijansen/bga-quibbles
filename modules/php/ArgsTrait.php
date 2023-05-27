@@ -11,9 +11,25 @@ trait ArgsTrait {
         game state.
     */
 
-    function argPlayerTurn() {
+    function argPlayerTurnTake() {
+        return [
+            'canCancelMoves' => $this->canCancelMoves()
+        ];
+    }
+
+    function argPlayerTurnTakeConfirm() {
+        $take = $this->getGlobalVariable(TAKE);
 
         return [
+            'canCancelMoves' => $this->canCancelMoves(),
+            'cardsToDiscard' => $take->cardsToDiscard,
+            'totalDiscardValue' => $take->totalDiscardValue,
+        ];
+    }
+
+    function argPlayerTurnAddCollection() {
+        return [
+            'playerHandTypeCount' => $this->cardManager->countByTypeInLocationAndLocationArg(ZONE_PLAYER_HAND, $this->getActivePlayerId())
         ];
     }
 }
