@@ -9,7 +9,6 @@ TODO:
 - Players discard hands and refill if a player manages to empty their hand
 - Add icons to logging
 - Game progression percentage
-- Zoom manager
 - Check Spectator mode
 - Check Replay mode
 - Final artwork pending publisher

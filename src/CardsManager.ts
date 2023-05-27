@@ -3,12 +3,12 @@ const cardHeight = 257;
 
 class CardsManager extends CardManager<Card> {
 
-    private display: ManualPositionStock<Card>
-    private playerHand: ManualPositionStock<Card>
+    private display: LineFitPositionStock<Card>
+    private playerHand: LineFitPositionStock<Card>
     private deck: Deck<Card>
     private discard: Deck<Card>
     private playerStocks: VoidStock<Card>[] = []
-    private playerCollections: ManualPositionStock<Card>[] = []
+    private playerCollections: LineFitPositionStock<Card>[] = []
 
     public selectedSets: number[][] = null;
 
@@ -156,5 +156,10 @@ class CardsManager extends CardManager<Card> {
 
     addCardToCollection(cardCollected: Card, playerId: number) {
         this.playerCollections[playerId].addCard(cardCollected);
+    }
+
+    updateLineFitPositionStocks() {
+        const lineFitPositionStocks = [this.display, this.playerHand, ...Object.values(this.playerCollections)];
+        lineFitPositionStocks.forEach(stock => stock?.adjust());
     }
 }

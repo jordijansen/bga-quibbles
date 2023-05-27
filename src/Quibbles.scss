@@ -67,6 +67,8 @@
     }
 */
 @use 'sass:math';
+
+@import '../node_modules/bga-zoom/bga-zoom';
 @import '../node_modules/bga-cards/bga-cards';
 
 $card-width: 165px;
@@ -142,6 +144,11 @@ html, .mode_3d #game_play_area_background {
     background-repeat: no-repeat;
     background-position: center;
     vertical-align: middle;
+}
+
+#bga-zoom-controls {
+    top: 10px !important;
+    right: $card-width + 20px !important;
 }
 
 .quibbles-card {

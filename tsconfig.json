@@ -12,6 +12,7 @@
     "src/bga/Counter.d.ts",
     "src/bga/Define.ts",
     "src/Quibbles.d.ts",
+    "node_modules/bga-zoom/src/zoom-manager.ts",
 
     "node_modules/bga-animations/src/animations/cumulated-animations.ts",
     "node_modules/bga-animations/src/animations/pause-animation.ts",

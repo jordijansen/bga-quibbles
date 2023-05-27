@@ -9,6 +9,7 @@ declare const g_archive_mode;
 
 const ANIMATION_MS = 500;
 const TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : undefined;
+const LOCAL_STORAGE_ZOOM_KEY = 'Quibbles-zoom';
 
 class Quibbles implements QuibblesGame {
 
@@ -16,10 +17,10 @@ class Quibbles implements QuibblesGame {
     private gamedatas: QuibblesGameData;
     private cardsManager: CardsManager;
     private playerManager: PlayerManager
+    private zoomManager: ZoomManager;
 
     constructor() {
-        this.cardsManager = new CardsManager(this);
-        this.playerManager = new PlayerManager(this);
+
     }
 
     /*
@@ -38,14 +39,25 @@ class Quibbles implements QuibblesGame {
     public setup(gamedatas: QuibblesGameData) {
         log( "Starting game setup" );
 
-        this.gamedatas = gamedatas;
-
-        this.playerManager.setUp(gamedatas);
-
-        this.cardsManager.setUp(gamedatas);
-
+        this.cardsManager = new CardsManager(this);
+        this.playerManager = new PlayerManager(this);
+        this.zoomManager = new ZoomManager({
+            element: document.getElementById('quibbles-table'),
+            smooth: true,
+            zoomControls: {
+                color: 'black',
+            },
+            localStorageZoomKey: LOCAL_STORAGE_ZOOM_KEY,
+            onDimensionsChange: () => {
+                this.cardsManager.updateLineFitPositionStocks();
+            },
+        });
 
         log('gamedatas', gamedatas);
+
+        this.gamedatas = gamedatas;
+        this.playerManager.setUp(gamedatas);
+        this.cardsManager.setUp(gamedatas);
 
         this.setupNotifications();
         log( "Ending game setup" );

@@ -24,7 +24,7 @@
     
     Please REMOVE this comment before publishing your game on BGA
 -->
-<div class="quibbles">
+<div id="quibbles-table" class="quibbles">
     <div id="quibbles-ui-row-1" class="quibbles-ui-row">
         <div class="whiteblock"><div id="card-deck"></div></div>
         <div id="logo-container"><img alt="logo" src="{GAMETHEMEURL}/img/logo.png"/></div>
