@@ -2,14 +2,10 @@
 
 abstract class AbstractCardManager extends APP_DbObject {
 
-    private string $tableName;
-
     protected Deck $cards;
 
     public function __construct(Deck $deck, string $tableName)
     {
-        $this->tableName = $tableName;
-
         $this->cards = $deck;
         $this->cards->init($tableName);
     }

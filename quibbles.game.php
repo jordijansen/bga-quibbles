@@ -59,7 +59,7 @@ class Quibbles extends Table
             DISCARDED_HAND_CARDS => DISCARDED_HAND_CARDS
         ]);
 
-        $this->cardManager = new CardManager(self::getNew("module.common.deck"));
+        $this->cardManager = new CardManager($this, self::getNew("module.common.deck"));
 	}
 	
     protected function getGameName( )

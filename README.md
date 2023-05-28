@@ -2,7 +2,6 @@
 Board Game Arena implementation for Quibbles by Gam'inBIZ
 
 TODO:
-- Shuffle deck if empty
 - Add icons to logging
 - Game progression percentage
 - Check Spectator mode

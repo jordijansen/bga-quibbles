@@ -98,3 +98,7 @@ interface NotifHandDiscarded {
     cardsDiscarded: Card[],
     handCount: number
 }
+
+interface NotifDeckReshuffled {
+    deckCount: number
+}

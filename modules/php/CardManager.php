@@ -1,9 +1,15 @@
 <?php
 
 class CardManager extends AbstractCardManager {
-    public function __construct(Deck $deck)
+
+    protected Quibbles $game;
+
+    public function __construct(Quibbles $game, Deck $deck)
     {
         parent::__construct($deck, 'card');
+        $this->game = $game;
+        $this->cards->autoreshuffle = true;
+        $this->cards->autoreshuffle_trigger = ['obj' => $this, 'method' => 'deckAutoReshuffle'];
     }
 
     public function setup() {
@@ -38,6 +44,12 @@ class CardManager extends AbstractCardManager {
     public function dealCardsToPlayer(int $playerId, int $nrOfCardsToDeal) {
         $dbResults = $this->cards->pickCardsForLocation($nrOfCardsToDeal, ZONE_DECK, ZONE_PLAYER_HAND, $playerId);
         return array_map(fn($dbCard) => new Card($dbCard), array_values($dbResults));
+    }
+
+    public function deckAutoReshuffle() {
+        $this->game->notifyAllPlayers('deckReshuffled', clienttranslate('Deck is emptied, shuffling the discard pile into a new deck'), [
+            'deckCount' => $this->countCardsInLocation('deck')
+        ]);
     }
 
     private function determineTypeArgMaxForType($type) {

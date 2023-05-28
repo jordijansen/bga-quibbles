@@ -339,7 +339,8 @@ class Quibbles implements QuibblesGame {
             ['cardAddedToCollection', ANIMATION_MS],
             ['passConfirmed', ANIMATION_MS],
             ['cardsDrawn', ANIMATION_MS],
-            ['handDiscarded', ANIMATION_MS]
+            ['handDiscarded', ANIMATION_MS],
+            ['deckReshuffled', ANIMATION_MS]
         ];
 
         notifs.forEach((notif) => {
@@ -423,5 +424,12 @@ class Quibbles implements QuibblesGame {
 
         this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
         this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
+    }
+
+    notif_deckReshuffled(notif: Notif<NotifDeckReshuffled>) {
+        log('notif_deckReshuffled: ');
+        log(notif);
+
+        this.cardsManager.deckReshuffled(notif.args.deckCount);
     }
 }

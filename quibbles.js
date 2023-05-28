@@ -1765,6 +1765,12 @@ var CardsManager = /** @class */ (function (_super) {
     CardsManager.prototype.getCardsInCollection = function (playerId) {
         return this.playerCollections[playerId].getCards();
     };
+    CardsManager.prototype.deckReshuffled = function (deckCount) {
+        this.deck.addCards(this.discard.getCards());
+        this.discard.setCardNumber(0);
+        this.deck.removeAll();
+        this.deck.setCardNumber(deckCount, { id: -1 });
+    };
     return CardsManager;
 }(CardManager));
 var PlayerManager = /** @class */ (function () {
@@ -2093,7 +2099,8 @@ var Quibbles = /** @class */ (function () {
             ['cardAddedToCollection', ANIMATION_MS],
             ['passConfirmed', ANIMATION_MS],
             ['cardsDrawn', ANIMATION_MS],
-            ['handDiscarded', ANIMATION_MS]
+            ['handDiscarded', ANIMATION_MS],
+            ['deckReshuffled', ANIMATION_MS]
         ];
         notifs.forEach(function (notif) {
             dojo.subscribe(notif[0], _this, "notif_".concat(notif[0]));
@@ -2154,6 +2161,11 @@ var Quibbles = /** @class */ (function () {
         log(notif);
         this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
         this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
+    };
+    Quibbles.prototype.notif_deckReshuffled = function (notif) {
+        log('notif_deckReshuffled: ');
+        log(notif);
+        this.cardsManager.deckReshuffled(notif.args.deckCount);
     };
     return Quibbles;
 }());

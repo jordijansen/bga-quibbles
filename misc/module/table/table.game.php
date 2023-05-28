@@ -364,6 +364,8 @@ class Page {
 }
 
 class Deck {
+    public bool $autoreshuffle;
+
     public function init(string $tableName) {}
     public function shuffle(string $location) {}
 
