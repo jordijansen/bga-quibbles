@@ -119,6 +119,24 @@ class CardsManager extends CardManager<Card> {
         }
     }
 
+    public setCollectionCardsSelectableForDiscard(selectionMode: CardSelectionMode, playerId: number) {
+        this.playerCollections[playerId].setSelectionMode(selectionMode);
+        this.playerCollections[playerId].onSelectionChange = undefined;
+        this.unsetCardsToDiscard(this.playerCollections[playerId].getCards())
+        if (selectionMode != 'none') {
+            this.playerCollections[playerId].onSelectionChange = ((selection) => {
+                this.unsetCardsToDiscard(this.playerCollections[playerId].getCards())
+                if (selection.length == 1) {
+                    this.setCardsToDiscard(selection)
+                }
+            })
+        }
+    }
+
+    getSelectedCollectionCards(playerId: number) {
+        return this.playerCollections[playerId].getSelection();
+    }
+
     public getSelectedPlayerHandCards() {
         return this.playerHand.getSelection();
     }
@@ -134,8 +152,8 @@ class CardsManager extends CardManager<Card> {
     public addCardsToDisplayFromDeck(cards: Card[]) {
         this.display.addCards(cards, {fromStock: this.deck});
     }
-    public addCardsToDisplay(cards: Card[]) {
-        this.display.addCards(cards);
+    public addCardsToDisplay(cards: Card[], playerId: number) {
+        this.display.addCards(cards, {fromStock: this.quibblesGame.getPlayer(playerId).self ? this.playerHand : this.playerStocks[playerId]});
     }
 
     public addCardsToPlayerHandFromDeck(playerId: number, cards: Card[]) {
@@ -157,13 +175,17 @@ class CardsManager extends CardManager<Card> {
             .forEach(card => card.classList.add('to-discard'))
     }
 
-    unsetCardsToDiscard() {
-        this.playerHand.getCards().map(card => this.getCardElement(card))
+    unsetCardsToDiscard(cards: Card[]) {
+        cards.map(card => this.getCardElement(card))
             .forEach(card => card.classList.remove('to-discard'))
     }
 
+    unsetCardsToDiscardPlayerHand() {
+        this.unsetCardsToDiscard(this.playerHand.getCards());
+    }
+
     addCardToCollection(cardCollected: Card, playerId: number) {
-        this.playerCollections[playerId].addCard(cardCollected);
+        this.playerCollections[playerId].addCard(cardCollected, {fromStock: this.quibblesGame.getPlayer(playerId).self ? this.playerHand : this.playerStocks[playerId]});
     }
 
     updateLineFitPositionStocks() {
@@ -174,4 +196,11 @@ class CardsManager extends CardManager<Card> {
     setDeckCount(deckCount: number) {
         this.deck.setCardNumber(deckCount);
     }
+
+    getCardsInCollection(playerId: number) {
+        return this.playerCollections[playerId].getCards();
+    }
+
+
+
 }

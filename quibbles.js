@@ -1693,6 +1693,23 @@ var CardsManager = /** @class */ (function (_super) {
             });
         }
     };
+    CardsManager.prototype.setCollectionCardsSelectableForDiscard = function (selectionMode, playerId) {
+        var _this = this;
+        this.playerCollections[playerId].setSelectionMode(selectionMode);
+        this.playerCollections[playerId].onSelectionChange = undefined;
+        this.unsetCardsToDiscard(this.playerCollections[playerId].getCards());
+        if (selectionMode != 'none') {
+            this.playerCollections[playerId].onSelectionChange = (function (selection) {
+                _this.unsetCardsToDiscard(_this.playerCollections[playerId].getCards());
+                if (selection.length == 1) {
+                    _this.setCardsToDiscard(selection);
+                }
+            });
+        }
+    };
+    CardsManager.prototype.getSelectedCollectionCards = function (playerId) {
+        return this.playerCollections[playerId].getSelection();
+    };
     CardsManager.prototype.getSelectedPlayerHandCards = function () {
         return this.playerHand.getSelection();
     };
@@ -1705,8 +1722,8 @@ var CardsManager = /** @class */ (function (_super) {
     CardsManager.prototype.addCardsToDisplayFromDeck = function (cards) {
         this.display.addCards(cards, { fromStock: this.deck });
     };
-    CardsManager.prototype.addCardsToDisplay = function (cards) {
-        this.display.addCards(cards);
+    CardsManager.prototype.addCardsToDisplay = function (cards, playerId) {
+        this.display.addCards(cards, { fromStock: this.quibblesGame.getPlayer(playerId).self ? this.playerHand : this.playerStocks[playerId] });
     };
     CardsManager.prototype.addCardsToPlayerHandFromDeck = function (playerId, cards) {
         this.addCardsToPlayerHand(playerId, cards, { fromStock: this.deck });
@@ -1727,13 +1744,16 @@ var CardsManager = /** @class */ (function (_super) {
         cards.map(function (card) { return _this.getCardElement(card); })
             .forEach(function (card) { return card.classList.add('to-discard'); });
     };
-    CardsManager.prototype.unsetCardsToDiscard = function () {
+    CardsManager.prototype.unsetCardsToDiscard = function (cards) {
         var _this = this;
-        this.playerHand.getCards().map(function (card) { return _this.getCardElement(card); })
+        cards.map(function (card) { return _this.getCardElement(card); })
             .forEach(function (card) { return card.classList.remove('to-discard'); });
     };
+    CardsManager.prototype.unsetCardsToDiscardPlayerHand = function () {
+        this.unsetCardsToDiscard(this.playerHand.getCards());
+    };
     CardsManager.prototype.addCardToCollection = function (cardCollected, playerId) {
-        this.playerCollections[playerId].addCard(cardCollected);
+        this.playerCollections[playerId].addCard(cardCollected, { fromStock: this.quibblesGame.getPlayer(playerId).self ? this.playerHand : this.playerStocks[playerId] });
     };
     CardsManager.prototype.updateLineFitPositionStocks = function () {
         var lineFitPositionStocks = __spreadArray([this.display, this.playerHand], Object.values(this.playerCollections), true);
@@ -1741,6 +1761,9 @@ var CardsManager = /** @class */ (function (_super) {
     };
     CardsManager.prototype.setDeckCount = function (deckCount) {
         this.deck.setCardNumber(deckCount);
+    };
+    CardsManager.prototype.getCardsInCollection = function (playerId) {
+        return this.playerCollections[playerId].getCards();
     };
     return CardsManager;
 }(CardManager));
@@ -1843,6 +1866,9 @@ var Quibbles = /** @class */ (function () {
             case 'playerTurnPass':
                 this.onEnteringPlayerTurnPass();
                 break;
+            case 'discardCollectionCard':
+                this.onEnteringDiscardCollectionCard();
+                break;
         }
     };
     Quibbles.prototype.onEnteringPlayerTurnTake = function () {
@@ -1881,6 +1907,9 @@ var Quibbles = /** @class */ (function () {
             this.cardsManager.setHandCardsSelectable('single');
         }
     };
+    Quibbles.prototype.onEnteringDiscardCollectionCard = function () {
+        this.cardsManager.setCollectionCardsSelectableForDiscard('single', this.getPlayerId());
+    };
     Quibbles.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
@@ -1893,17 +1922,23 @@ var Quibbles = /** @class */ (function () {
             case 'playerTurnPass':
                 this.onLeavingPlayerTurnPass();
                 break;
+            case 'discardCollectionCard':
+                this.onLeavingDiscardCollectionCard();
+                break;
         }
     };
     Quibbles.prototype.onLeavingPlayerTurnTake = function () {
         this.cardsManager.setHandCardsSelectable('none');
     };
     Quibbles.prototype.onLeavingPlayerTurnTakeConfirm = function () {
-        this.cardsManager.unsetCardsToDiscard();
+        this.cardsManager.unsetCardsToDiscardPlayerHand();
         this.cardsManager.setDisplayCardsSelectableSets('none');
     };
     Quibbles.prototype.onLeavingPlayerTurnPass = function () {
         this.cardsManager.setHandCardsSelectable('none');
+    };
+    Quibbles.prototype.onLeavingDiscardCollectionCard = function () {
+        this.cardsManager.setCollectionCardsSelectableForDiscard('none', this.getPlayerId());
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
     //                        action status bar (ie: the HTML links in the status bar).
@@ -1932,9 +1967,13 @@ var Quibbles = /** @class */ (function () {
                 case 'playerTurnPass':
                     this.addActionButton('passConfirm', _("Confirm Card"), function () { return _this.passConfirm(); });
                     break;
+                case 'discardCollectionCard':
+                    this.addActionButton('confirmDiscard', _("Confirm Discard"), function () { return _this.confirmCollectionCardDiscard(args.type); });
+                    this.addActionButton('cancelDiscard', _("Cancel"), function () { return _this.restoreServerGameState(); }, null, null, 'gray');
+                    break;
             }
             if (['playerTurnTake', 'playerTurnTakeConfirm', 'playerTurnPass'].includes(stateName) && args.canCancelMoves) {
-                this.addActionButton("undoLastMoves", _("Undo last moves"), function () { return _this.undoLastMoves(); }, null, null, 'gray');
+                this.addActionButton('undoLastMoves', _("Undo last moves"), function () { return _this.undoLastMoves(); }, null, null, 'gray');
             }
         }
     };
@@ -1957,7 +1996,19 @@ var Quibbles = /** @class */ (function () {
         this.takeAction("endTurn");
     };
     Quibbles.prototype.addCardToCollection = function (type) {
-        this.takeAction("addCardToCollection", { type: type, cardIdToDiscard: null });
+        var cardsInCollection = this.cardsManager.getCardsInCollection(this.getPlayerId());
+        if (cardsInCollection.length == 6) {
+            this.setClientState("discardCollectionCard", { descriptionmyturn: _("${you} must discard a card from your collection as you already have 6 cards in your collection") + "<br />", args: { type: type } });
+        }
+        else {
+            this.takeAction("addCardToCollection", { type: type, cardIdToDiscard: null });
+        }
+    };
+    Quibbles.prototype.confirmCollectionCardDiscard = function (type) {
+        var selectedCardIds = this.cardsManager.getSelectedCollectionCards(this.getPlayerId())
+            .map(function (card) { return card.id; });
+        var cardIdToDiscard = selectedCardIds.length == 1 ? selectedCardIds[0] : null;
+        this.takeAction("addCardToCollection", { type: type, cardIdToDiscard: cardIdToDiscard });
     };
     Quibbles.prototype.passConfirm = function () {
         var _this = this;
@@ -2051,12 +2102,12 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.notif_cancelLastMoves = function (notif) {
         log('notif_cancelLastMoves: ');
         log(notif);
-        this.cardsManager.addCardsToDisplay(notif.args.displayCards);
+        this.cardsManager.addCardsToDisplay(notif.args.displayCards, this.getPlayerId());
     };
     Quibbles.prototype.notif_takeConfirmed = function (notif) {
         log('notif_takeConfirmed: ');
         log(notif);
-        this.cardsManager.discardCards(notif.args.cardsDiscarded);
+        this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
         this.cardsManager.addCardsToPlayerHand(notif.args.playerId, notif.args.cardsTaken);
         this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
     };
@@ -2083,7 +2134,7 @@ var Quibbles = /** @class */ (function () {
         log('notif_passConfirmed: ');
         log(notif);
         this.cardsManager.setDeckCount(notif.args.deckCount);
-        this.cardsManager.addCardsToDisplay([notif.args.cardToDisplay]);
+        this.cardsManager.addCardsToDisplay([notif.args.cardToDisplay], notif.args.playerId);
         if (this.getPlayerId() !== notif.args.playerId) {
             this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn);
         }

@@ -2,7 +2,6 @@
 Board Game Arena implementation for Quibbles by Gam'inBIZ
 
 TODO:
-- Add to collection, discard card if already 6 in collection
 - Players discard hands and refill if a player manages to empty their hand
 - Shuffle deck if empty
 - Add icons to logging

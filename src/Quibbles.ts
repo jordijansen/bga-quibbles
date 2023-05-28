@@ -85,6 +85,9 @@ class Quibbles implements QuibblesGame {
             case 'playerTurnPass':
                 this.onEnteringPlayerTurnPass();
                 break;
+            case 'discardCollectionCard':
+                this.onEnteringDiscardCollectionCard();
+                break;
         }
     }
 
@@ -128,6 +131,10 @@ class Quibbles implements QuibblesGame {
         }
     }
 
+    private onEnteringDiscardCollectionCard() {
+        this.cardsManager.setCollectionCardsSelectableForDiscard('single', this.getPlayerId())
+    }
+
     public onLeavingState(stateName: string) {
         log( 'Leaving state: '+stateName );
 
@@ -141,6 +148,9 @@ class Quibbles implements QuibblesGame {
             case 'playerTurnPass':
                 this.onLeavingPlayerTurnPass();
                 break;
+            case 'discardCollectionCard':
+                this.onLeavingDiscardCollectionCard();
+                break;
         }
     }
 
@@ -149,12 +159,16 @@ class Quibbles implements QuibblesGame {
     }
 
     private onLeavingPlayerTurnTakeConfirm() {
-        this.cardsManager.unsetCardsToDiscard();
+        this.cardsManager.unsetCardsToDiscardPlayerHand();
         this.cardsManager.setDisplayCardsSelectableSets('none');
     }
 
     private onLeavingPlayerTurnPass() {
         this.cardsManager.setHandCardsSelectable('none');
+    }
+
+    private onLeavingDiscardCollectionCard() {
+        this.cardsManager.setCollectionCardsSelectableForDiscard('none', this.getPlayerId());
     }
 
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
@@ -184,10 +198,14 @@ class Quibbles implements QuibblesGame {
                 case 'playerTurnPass':
                     (this as any).addActionButton('passConfirm', _("Confirm Card"), () => (this as any).passConfirm());
                     break;
+                case 'discardCollectionCard':
+                    (this as any).addActionButton('confirmDiscard', _("Confirm Discard"), () => (this as any).confirmCollectionCardDiscard(args.type));
+                    (this as any).addActionButton('cancelDiscard', _("Cancel"), () => (this as any).restoreServerGameState(), null, null, 'gray');
+                    break;
             }
 
             if (['playerTurnTake', 'playerTurnTakeConfirm', 'playerTurnPass'].includes(stateName) && args.canCancelMoves) {
-                (this as any).addActionButton(`undoLastMoves`, _("Undo last moves"), () => this.undoLastMoves(), null, null, 'gray');
+                (this as any).addActionButton('undoLastMoves', _("Undo last moves"), () => this.undoLastMoves(), null, null, 'gray');
             }
         }
     }
@@ -215,7 +233,19 @@ class Quibbles implements QuibblesGame {
     }
 
     private addCardToCollection(type: number) {
-        this.takeAction("addCardToCollection", {type, cardIdToDiscard: null});
+        const cardsInCollection = this.cardsManager.getCardsInCollection(this.getPlayerId());
+        if (cardsInCollection.length == 6) {
+            (this as any).setClientState("discardCollectionCard", {descriptionmyturn : _("${you} must discard a card from your collection as you already have 6 cards in your collection") + "<br />", args: {type}});
+        } else {
+            this.takeAction("addCardToCollection", {type, cardIdToDiscard: null});
+        }
+    }
+
+    private confirmCollectionCardDiscard(type: number) {
+        const selectedCardIds = this.cardsManager.getSelectedCollectionCards(this.getPlayerId())
+            .map(card => card.id);
+        const cardIdToDiscard = selectedCardIds.length == 1 ? selectedCardIds[0] : null;
+        this.takeAction("addCardToCollection", {type, cardIdToDiscard});
     }
 
     private passConfirm() {
@@ -320,14 +350,14 @@ class Quibbles implements QuibblesGame {
     notif_cancelLastMoves(notif: Notif<NotifCancelLastMoves>) {
         log('notif_cancelLastMoves: ');
         log(notif);
-        this.cardsManager.addCardsToDisplay(notif.args.displayCards)
+        this.cardsManager.addCardsToDisplay(notif.args.displayCards, this.getPlayerId())
     }
 
     notif_takeConfirmed(notif: Notif<NotifTakeConfirmed>) {
         log('notif_takeConfirmed: ');
         log(notif);
 
-        this.cardsManager.discardCards(notif.args.cardsDiscarded);
+        this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
 
         this.cardsManager.addCardsToPlayerHand(notif.args.playerId, notif.args.cardsTaken)
 
@@ -367,7 +397,7 @@ class Quibbles implements QuibblesGame {
         log(notif);
 
         this.cardsManager.setDeckCount(notif.args.deckCount);
-        this.cardsManager.addCardsToDisplay([notif.args.cardToDisplay])
+        this.cardsManager.addCardsToDisplay([notif.args.cardToDisplay], notif.args.playerId)
 
         if (this.getPlayerId() !== notif.args.playerId) {
             this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn)

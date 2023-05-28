@@ -140,8 +140,8 @@ trait ActionTrait {
         if (sizeof($cardsInCollection) == 6) {
             if (isset($cardIdToDiscard)) {
                 $cardToDiscard = $this->cardManager->getCard($cardIdToDiscard);
-                if ($cardToDiscard->location != ZONE_PLAYER_HAND || $cardToDiscard->location_arg != $playerId) {
-                    throw new BgaUserException("Provided card to discard is not in your hand");
+                if ($cardToDiscard->location != ZONE_PLAYER_AREA || $cardToDiscard->location_arg != $playerId) {
+                    throw new BgaUserException("Provided card to discard is not in your collection");
                 }
                 $cardIdsToDiscard = [$cardToDiscard->id];
             } else {

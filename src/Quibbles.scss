@@ -263,6 +263,9 @@ html, .mode_3d #game_play_area_background {
 
         .player-area {
             width: calc(50% - 30px);
+            @media only screen and (max-width: 960px) {
+                width: 100%;
+            }
             .player-collection {
                 height: $card-height;
             }
