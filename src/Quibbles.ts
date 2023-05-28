@@ -338,7 +338,8 @@ class Quibbles implements QuibblesGame {
             ['displayRefilled', ANIMATION_MS],
             ['cardAddedToCollection', ANIMATION_MS],
             ['passConfirmed', ANIMATION_MS],
-            ['cardsDrawn', ANIMATION_MS]
+            ['cardsDrawn', ANIMATION_MS],
+            ['handDiscarded', ANIMATION_MS]
         ];
 
         notifs.forEach((notif) => {
@@ -414,5 +415,13 @@ class Quibbles implements QuibblesGame {
         if (this.getPlayerId() === notif.args.playerId) {
             this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn)
         }
+    }
+
+    notif_handDiscarded(notif: Notif<NotifHandDiscarded>) {
+        log('notif_handDiscarded: ');
+        log(notif);
+
+        this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
+        this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
     }
 }

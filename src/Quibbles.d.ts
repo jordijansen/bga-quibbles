@@ -92,3 +92,9 @@ interface NotifCardsDrawn {
     playerId: number,
     cardsDrawn: Card[]
 }
+
+interface NotifHandDiscarded {
+    playerId: number,
+    cardsDiscarded: Card[],
+    handCount: number
+}

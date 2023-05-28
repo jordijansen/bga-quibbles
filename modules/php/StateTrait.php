@@ -34,7 +34,46 @@ trait StateTrait {
             'displayCards' => $cardsInDisplay
         ]);
 
-        // TODO If your hand is empty, all players have to discard the cards they hold in their hands. Deal every player a hand of 3 new cards.
+        // If the active player has emptied their hand, all players have to discard their hands and get 3 new cards.
+        if ($this->cardManager->countCardsInLocation(ZONE_PLAYER_HAND, $this->getActivePlayerId()) == 0) {
+            self::notifyAllPlayers('handEmptied', clienttranslate('${player_name} has emptied their hand, all other players discard their hand'), [
+                'playerId' => $this->getActivePlayerId(),
+                'player_name' => $this->getPlayerName($this->getActivePlayerId())
+            ]);
+
+            $players = $this->loadPlayersBasicInfos();
+            foreach( $players as $playerId => $player )
+            {
+                $cardsInHand = $this->cardManager->getCardsInLocation(ZONE_PLAYER_HAND, $playerId);
+                $cardIdsInHand = array_map(fn($card) => $card->id, $cardsInHand);
+                $cardsDrawn = $this->cardManager->dealCardsToPlayer($playerId, INITIAL_HAND_SIZE);
+
+                $logMessage = clienttranslate('${player_name} draws ${handCount} new cards');
+                if (sizeof($cardsInHand) > 0) {
+                    $this->cardManager->moveCards($cardIdsInHand, ZONE_DISCARD);
+                    $logMessage = clienttranslate('${player_name} discards ${cardSet} and draws ${handCount} new cards');
+                }
+
+                self::notifyAllPlayers('handDiscarded', $logMessage, [
+                    'playerId' => $playerId,
+                    'player_name' => $this->getPlayerName($playerId),
+                    'cardsDiscarded' => $this->cardManager->getCards($cardIdsInHand),
+                    'handCount' => $this->cardManager->countCardsInLocation(ZONE_PLAYER_HAND, $playerId),
+                    'cardSet' => array_map(fn($card) => (int) $card->type, $cardsInHand)
+                ]);
+
+                self::notifyPlayer($playerId, 'cardsDrawn', '', [
+                    'playerId' => $playerId,
+                    'cardsDrawn' => $cardsDrawn
+                ]);
+            }
+        }
+
+        self::notifyAllPlayers('displayRefilled', clienttranslate("Card display refilled"), [
+            'deckCount' => $this->cardManager->countCardsInLocation(ZONE_DECK),
+            'displayCards' => $cardsInDisplay
+        ]);
+
         // TODO Note: if the draw pile is empty, shuffle the discard pile and form a new pile.
 
         $this->deleteGlobalVariables([UNDO, TAKE]);

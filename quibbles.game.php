@@ -32,6 +32,7 @@ require_once('modules/php/ActionTrait.php');
 require_once('modules/php/StateTrait.php');
 require_once('modules/php/ArgsTrait.php');
 require_once('modules/php/UtilsTrait.php');
+require_once('modules/php/DebugTrait.php');
 
 class Quibbles extends Table
 {
@@ -39,6 +40,7 @@ class Quibbles extends Table
     use StateTrait;
     use ArgsTrait;
     use UtilsTrait;
+    use DebugTrait;
 
     private CardManager $cardManager;
 
