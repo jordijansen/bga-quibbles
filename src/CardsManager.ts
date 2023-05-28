@@ -67,14 +67,18 @@ class CardsManager extends CardManager<Card> {
     public setHandCardsSelectable(selectionMode: CardSelectionMode, maxTotalValue?: number) {
         this.playerHand.setSelectionMode(selectionMode)
         if (selectionMode != 'none') {
-            this.playerHand.onSelectionChange = ((selection) => {
-                const selectedValue = selection.map(card => Number(card.type)).reduce((sum, current) => sum + current, 0);
-                const remainingValue = maxTotalValue - selectedValue;
+            if (maxTotalValue) {
+                this.playerHand.onSelectionChange = ((selection) => {
+                    const selectedValue = selection.map(card => Number(card.type)).reduce((sum, current) => sum + current, 0);
+                    const remainingValue = maxTotalValue - selectedValue;
 
-                const selectableCards = this.playerHand.getCards()
-                    .filter(card => selection.includes(card) || Number(card.type) <= remainingValue)
-                this.playerHand.setSelectableCards(selectableCards)
-            })
+                    const selectableCards = this.playerHand.getCards()
+                        .filter(card => selection.includes(card) || Number(card.type) <= remainingValue)
+                    this.playerHand.setSelectableCards(selectableCards)
+                })
+            } else {
+                this.playerHand.onSelectionChange = undefined;
+            }
         }
     }
 
@@ -134,13 +138,17 @@ class CardsManager extends CardManager<Card> {
         this.display.addCards(cards);
     }
 
-    public addCardsToPlayerHand(playerId: number, cards: Card[]) {
+    public addCardsToPlayerHandFromDeck(playerId: number, cards: Card[]) {
+        this.addCardsToPlayerHand(playerId, cards, {fromStock: this.deck})
+    }
+
+    public addCardsToPlayerHand(playerId: number, cards: Card[], animation: CardAnimation<Card> = {}) {
         if (this.quibblesGame.getPlayerId() === playerId &&
             this.quibblesGame.getPlayer(playerId).self &&
             !this.quibblesGame.isReadOnly()) {
-            this.playerHand.addCards(cards);
+            this.playerHand.addCards(cards, animation);
         } else {
-            this.playerStocks[playerId].addCards(cards);
+            this.playerStocks[playerId].addCards(cards, animation);
         }
     }
 
@@ -161,5 +169,9 @@ class CardsManager extends CardManager<Card> {
     updateLineFitPositionStocks() {
         const lineFitPositionStocks = [this.display, this.playerHand, ...Object.values(this.playerCollections)];
         lineFitPositionStocks.forEach(stock => stock?.adjust());
+    }
+
+    setDeckCount(deckCount: number) {
+        this.deck.setCardNumber(deckCount);
     }
 }

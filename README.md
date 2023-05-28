@@ -4,9 +4,9 @@ Board Game Arena implementation for Quibbles by Gam'inBIZ
 # Status: Dev
 
 TODO:
-- PASS action
-- Clear display if 10 or more cards are now present
+- Add to collection, discard card if already 6 in collection
 - Players discard hands and refill if a player manages to empty their hand
+- Shuffle deck if empty
 - Add icons to logging
 - Game progression percentage
 - Check Spectator mode

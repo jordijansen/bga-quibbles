@@ -176,4 +176,41 @@ trait ActionTrait {
 
         $this->gamestate->nextState(ST_NEXT_PLAYER);
     }
+
+    public function pass($cardId) {
+        self::checkAction(ACT_PASS);
+
+        $playerId = intval($this->getActivePlayerId());
+
+        if (!isset($cardId)) {
+            throw new BgaUserException(clienttranslate("You need to select a card from your hand to add to the display"));
+        }
+
+        $card = $this->cardManager->getCard($cardId);
+        if ($card->location != ZONE_PLAYER_HAND || $card->location_arg != $playerId) {
+            throw new BgaUserException("Provided card is not in your hand");
+        }
+
+        $this->cardManager->moveCard($card->id, ZONE_DISPLAY);
+        $cardsDrawn = $this->cardManager->dealCardsToPlayer($playerId, PASS_ACTION_NR_OF_CARDS_TO_DRAW);
+
+        self::notifyAllPlayers('passConfirmed', clienttranslate('${player_name} passes and adds ${cardSet} to the display and draws ${nrOfCardsDrawn} cards'), [
+            'playerId' => $playerId,
+            'player_name' => $this->getPlayerName($playerId),
+            'handCount' => $this->cardManager->countCardsInLocation('hand', $playerId),
+            'deckCount' => $this->cardManager->countCardsInLocation('deck'),
+            'cardToDisplay' => $this->cardManager->getCard($card->id),
+            'cardsDrawn' => array_map(fn($card) => Card::onlyPublicInfo($card), $cardsDrawn), // Only return the public info for all players
+            'nrOfCardsDrawn' => sizeof($cardsDrawn),
+            'cardSet' => $card->type
+        ]);
+
+        // Also notify the player of the real cards drawn.
+        self::notifyPlayer($playerId, 'cardsDrawn', '', [
+            'playerId' => $playerId,
+            'cardsDrawn' => $cardsDrawn
+        ]);
+
+        $this->gamestate->nextState(ACT_PASS);
+    }
 }

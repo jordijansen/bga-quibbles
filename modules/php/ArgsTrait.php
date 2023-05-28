@@ -17,6 +17,12 @@ trait ArgsTrait {
         ];
     }
 
+    function argPlayerTurnPass() {
+        return [
+            'canCancelMoves' => $this->canCancelMoves()
+        ];
+    }
+
     function argPlayerTurnTakeConfirm() {
         $take = $this->getGlobalVariable(TAKE);
 

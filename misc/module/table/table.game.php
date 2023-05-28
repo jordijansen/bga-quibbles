@@ -377,7 +377,9 @@ class Deck {
         return 0;
     }
 
-    public function pickCardsForLocation(int $numberOfCards, string $fromLocation, string $toLocation, int $location_arg = 0) {}
+    public function pickCardsForLocation(int $numberOfCards, string $fromLocation, string $toLocation, int $location_arg = 0): array {
+        return [];
+    }
 
     public function moveCards(array $cardIds, string $location, ?int $location_arg)
     {

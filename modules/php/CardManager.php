@@ -29,10 +29,15 @@ class CardManager extends AbstractCardManager {
     }
 
     public function dealInitialCardsToPlayers($players) {
-        foreach( $players as $player_id => $player )
+        foreach( $players as $playerId => $player )
         {
-            $this->cards->pickCardsForLocation(INITIAL_HAND_SIZE, ZONE_DECK, ZONE_PLAYER_HAND, $player_id);
+            $this->cards->pickCardsForLocation(INITIAL_HAND_SIZE, ZONE_DECK, ZONE_PLAYER_HAND, $playerId);
         }
+    }
+
+    public function dealCardsToPlayer(int $playerId, int $nrOfCardsToDeal) {
+        $dbResults = $this->cards->pickCardsForLocation($nrOfCardsToDeal, ZONE_DECK, ZONE_PLAYER_HAND, $playerId);
+        return array_map(fn($dbCard) => new Card($dbCard), array_values($dbResults));
     }
 
     private function determineTypeArgMaxForType($type) {

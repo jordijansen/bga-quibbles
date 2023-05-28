@@ -30,6 +30,7 @@ trait StateTrait {
 
         $cardsInDisplay = $this->cardManager->fillDisplay();
         self::notifyAllPlayers('displayRefilled', clienttranslate("Card display refilled"), [
+            'deckCount' => $this->cardManager->countCardsInLocation(ZONE_DECK),
             'displayCards' => $cardsInDisplay
         ]);
 

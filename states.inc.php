@@ -85,6 +85,7 @@ $playerActionsGameStates = [
         ],
         "transitions" => [
             ACT_TAKE => ST_PLAYER_TURN_TAKE_ID,
+            ACT_PASS => ST_PLAYER_TURN_PASS_ID
         ]
     ],
     ST_PLAYER_TURN_TAKE_ID => [
@@ -130,6 +131,22 @@ $playerActionsGameStates = [
         ],
         "transitions" => [
             ST_NEXT_PLAYER => ST_NEXT_PLAYER_ID
+        ]
+    ],
+
+    ST_PLAYER_TURN_PASS_ID => [
+        "name" => ST_PLAYER_TURN_PASS,
+        "description" => clienttranslate('PASS: ${actplayer} must choose a card to add to the display'),
+        "descriptionmyturn" => clienttranslate('PASS: ${you} must choose a card to add to the display'),
+        "type" => "activeplayer",
+        "args" => "argPlayerTurnPass",
+        "possibleactions" => [
+            ACT_PASS,
+            ACT_CANCEL
+        ],
+        "transitions" => [
+            ACT_PASS => ST_PLAYER_TURN_ADD_COLLECTION_ID,
+            ACT_CANCEL => ST_PLAYER_TURN_ID
         ]
     ],
 ];

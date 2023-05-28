@@ -1642,13 +1642,18 @@ var CardsManager = /** @class */ (function (_super) {
         var _this = this;
         this.playerHand.setSelectionMode(selectionMode);
         if (selectionMode != 'none') {
-            this.playerHand.onSelectionChange = (function (selection) {
-                var selectedValue = selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0);
-                var remainingValue = maxTotalValue - selectedValue;
-                var selectableCards = _this.playerHand.getCards()
-                    .filter(function (card) { return selection.includes(card) || Number(card.type) <= remainingValue; });
-                _this.playerHand.setSelectableCards(selectableCards);
-            });
+            if (maxTotalValue) {
+                this.playerHand.onSelectionChange = (function (selection) {
+                    var selectedValue = selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0);
+                    var remainingValue = maxTotalValue - selectedValue;
+                    var selectableCards = _this.playerHand.getCards()
+                        .filter(function (card) { return selection.includes(card) || Number(card.type) <= remainingValue; });
+                    _this.playerHand.setSelectableCards(selectableCards);
+                });
+            }
+            else {
+                this.playerHand.onSelectionChange = undefined;
+            }
         }
     };
     CardsManager.prototype.setDisplayCardsSelectableSets = function (selectionMode, totalDiscardValue) {
@@ -1703,14 +1708,18 @@ var CardsManager = /** @class */ (function (_super) {
     CardsManager.prototype.addCardsToDisplay = function (cards) {
         this.display.addCards(cards);
     };
-    CardsManager.prototype.addCardsToPlayerHand = function (playerId, cards) {
+    CardsManager.prototype.addCardsToPlayerHandFromDeck = function (playerId, cards) {
+        this.addCardsToPlayerHand(playerId, cards, { fromStock: this.deck });
+    };
+    CardsManager.prototype.addCardsToPlayerHand = function (playerId, cards, animation) {
+        if (animation === void 0) { animation = {}; }
         if (this.quibblesGame.getPlayerId() === playerId &&
             this.quibblesGame.getPlayer(playerId).self &&
             !this.quibblesGame.isReadOnly()) {
-            this.playerHand.addCards(cards);
+            this.playerHand.addCards(cards, animation);
         }
         else {
-            this.playerStocks[playerId].addCards(cards);
+            this.playerStocks[playerId].addCards(cards, animation);
         }
     };
     CardsManager.prototype.setCardsToDiscard = function (cards) {
@@ -1729,6 +1738,9 @@ var CardsManager = /** @class */ (function (_super) {
     CardsManager.prototype.updateLineFitPositionStocks = function () {
         var lineFitPositionStocks = __spreadArray([this.display, this.playerHand], Object.values(this.playerCollections), true);
         lineFitPositionStocks.forEach(function (stock) { return stock === null || stock === void 0 ? void 0 : stock.adjust(); });
+    };
+    CardsManager.prototype.setDeckCount = function (deckCount) {
+        this.deck.setCardNumber(deckCount);
     };
     return CardsManager;
 }(CardManager));
@@ -1828,6 +1840,9 @@ var Quibbles = /** @class */ (function () {
             case 'playerTurnAddCollection':
                 this.onEnteringPlayerTurnAddCollection(args.args);
                 break;
+            case 'playerTurnPass':
+                this.onEnteringPlayerTurnPass();
+                break;
         }
     };
     Quibbles.prototype.onEnteringPlayerTurnTake = function () {
@@ -1861,6 +1876,11 @@ var Quibbles = /** @class */ (function () {
             this.updatePageTitle();
         }
     };
+    Quibbles.prototype.onEnteringPlayerTurnPass = function () {
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.setHandCardsSelectable('single');
+        }
+    };
     Quibbles.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
         switch (stateName) {
@@ -1870,6 +1890,9 @@ var Quibbles = /** @class */ (function () {
             case 'playerTurnTakeConfirm':
                 this.onLeavingPlayerTurnTakeConfirm();
                 break;
+            case 'playerTurnPass':
+                this.onLeavingPlayerTurnPass();
+                break;
         }
     };
     Quibbles.prototype.onLeavingPlayerTurnTake = function () {
@@ -1878,6 +1901,9 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.onLeavingPlayerTurnTakeConfirm = function () {
         this.cardsManager.unsetCardsToDiscard();
         this.cardsManager.setDisplayCardsSelectableSets('none');
+    };
+    Quibbles.prototype.onLeavingPlayerTurnPass = function () {
+        this.cardsManager.setHandCardsSelectable('none');
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
     //                        action status bar (ie: the HTML links in the status bar).
@@ -1902,8 +1928,12 @@ var Quibbles = /** @class */ (function () {
                         cardsThatCanBeAdded.forEach(function (cardThatCanBeAdded) { return _this.addActionButton("addCardToCollection".concat(cardThatCanBeAdded.card_type), _("Add") + " ".concat(cardThatCanBeAdded.card_type), function () { return _this.addCardToCollection(Number(cardThatCanBeAdded.card_type)); }); });
                     }
                     this.addActionButton('endTurn', _("End Turn"), function () { return _this.endTurn(); });
+                    break;
+                case 'playerTurnPass':
+                    this.addActionButton('passConfirm', _("Confirm Card"), function () { return _this.passConfirm(); });
+                    break;
             }
-            if (['playerTurnTake', 'playerTurnTakeConfirm'].includes(stateName) && args.canCancelMoves) {
+            if (['playerTurnTake', 'playerTurnTakeConfirm', 'playerTurnPass'].includes(stateName) && args.canCancelMoves) {
                 this.addActionButton("undoLastMoves", _("Undo last moves"), function () { return _this.undoLastMoves(); }, null, null, 'gray');
             }
         }
@@ -1919,14 +1949,38 @@ var Quibbles = /** @class */ (function () {
         this.takeAction("takeConfirmDiscard", { cardIds: JSON.stringify(cardIds) });
     };
     Quibbles.prototype.takeConfirm = function () {
+        var _this = this;
         var selectedSets = this.cardsManager.selectedSets;
-        this.takeAction("takeConfirm", { selectedSets: JSON.stringify(selectedSets) });
+        this.wrapInConfirm(function () { return _this.takeAction("takeConfirm", { selectedSets: JSON.stringify(selectedSets) }); });
     };
     Quibbles.prototype.endTurn = function () {
         this.takeAction("endTurn");
     };
     Quibbles.prototype.addCardToCollection = function (type) {
         this.takeAction("addCardToCollection", { type: type, cardIdToDiscard: null });
+    };
+    Quibbles.prototype.passConfirm = function () {
+        var _this = this;
+        var selectedCards = this.cardsManager.getSelectedPlayerHandCards();
+        var cardId = selectedCards.length > 0 ? selectedCards[0].id : null;
+        var performAction = function () { return _this.takeAction("pass", { cardId: cardId }); };
+        if (cardId) {
+            this.wrapInConfirm(performAction);
+        }
+        else {
+            // This fails because no card selected, but will be handled by the backend.
+            performAction();
+        }
+    };
+    Quibbles.prototype.wrapInConfirm = function (runnable) {
+        if (this.isAskForConfirmation()) {
+            this.confirmationDialog(_("This action can not be undone. Are you sure?"), function () {
+                runnable();
+            });
+        }
+        else {
+            runnable();
+        }
     };
     ///////////////////////////////////////////////////
     //// Utility methods
@@ -1963,6 +2017,9 @@ var Quibbles = /** @class */ (function () {
         var _a;
         (_a = this.scoreCtrl[playerId]) === null || _a === void 0 ? void 0 : _a.toValue(score);
     };
+    Quibbles.prototype.isAskForConfirmation = function () {
+        return true; // For now always ask for confirmation, might make this a preference later on.
+    };
     ///////////////////////////////////////////////////
     //// Reaction to cometD notifications
     /*
@@ -1983,6 +2040,8 @@ var Quibbles = /** @class */ (function () {
             ['displayDiscarded', ANIMATION_MS],
             ['displayRefilled', ANIMATION_MS],
             ['cardAddedToCollection', ANIMATION_MS],
+            ['passConfirmed', ANIMATION_MS],
+            ['cardsDrawn', ANIMATION_MS]
         ];
         notifs.forEach(function (notif) {
             dojo.subscribe(notif[0], _this, "notif_".concat(notif[0]));
@@ -2009,6 +2068,7 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.notif_displayRefilled = function (notif) {
         log('notif_displayRefilled: ');
         log(notif);
+        this.cardsManager.setDeckCount(notif.args.deckCount);
         this.cardsManager.addCardsToDisplayFromDeck(notif.args.displayCards);
     };
     Quibbles.prototype.notif_cardAddedToCollection = function (notif) {
@@ -2018,6 +2078,24 @@ var Quibbles = /** @class */ (function () {
         this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
         this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
         this.cardsManager.addCardToCollection(notif.args.cardCollected, notif.args.playerId);
+    };
+    Quibbles.prototype.notif_passConfirmed = function (notif) {
+        log('notif_passConfirmed: ');
+        log(notif);
+        this.cardsManager.setDeckCount(notif.args.deckCount);
+        this.cardsManager.addCardsToDisplay([notif.args.cardToDisplay]);
+        if (this.getPlayerId() !== notif.args.playerId) {
+            this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn);
+        }
+        this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
+    };
+    Quibbles.prototype.notif_cardsDrawn = function (notif) {
+        log('notif_cardsDrawn: ');
+        log(notif);
+        // Only received by the player that has drawn cards
+        if (this.getPlayerId() === notif.args.playerId) {
+            this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn);
+        }
     };
     return Quibbles;
 }());

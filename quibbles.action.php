@@ -95,6 +95,15 @@ class action_quibbles extends APP_GameAction
         self::ajaxResponse();
     }
 
+    public function pass() {
+        self::setAjaxMode();
+
+        $cardId = self::getArg('cardId', AT_posint, false);
+        $this->game->pass($cardId);
+
+        self::ajaxResponse();
+    }
+
     private function validateJSonAlphaNum($value, $argName = 'unknown')
     {
         if (is_array($value)) {

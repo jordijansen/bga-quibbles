@@ -2,6 +2,7 @@
 
 const DISPLAY_CARD_SIZE = 6;
 const INITIAL_HAND_SIZE = 3;
+const PASS_ACTION_NR_OF_CARDS_TO_DRAW = 2;
 
 /**
  * State
@@ -16,6 +17,8 @@ const ST_PLAYER_TURN_TAKE_CONFIRM = 'playerTurnTakeConfirm';
 const ST_PLAYER_TURN_TAKE_CONFIRM_ID = 12;
 const ST_PLAYER_TURN_ADD_COLLECTION = 'playerTurnAddCollection';
 const ST_PLAYER_TURN_ADD_COLLECTION_ID = 13;
+const ST_PLAYER_TURN_PASS = 'playerTurnPass';
+const ST_PLAYER_TURN_PASS_ID = 14;
 
 const ST_NEXT_PLAYER = 'nextPlayer';
 const ST_NEXT_PLAYER_ID = 20;

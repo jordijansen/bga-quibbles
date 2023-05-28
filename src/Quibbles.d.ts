@@ -66,6 +66,7 @@ interface NotifDisplayDiscarded {
 }
 
 interface NotifDisplayRefilled {
+    deckCount: number,
     displayCards: Card[]
 }
 
@@ -76,4 +77,18 @@ interface NotifCardAddedToCollection {
     playerScore: number,
     cardsDiscarded: Card[],
     cardCollected: Card
+}
+
+interface NotifPassConfirmed {
+    playerId: number,
+    player_name: string,
+    handCount: number,
+    deckCount: number,
+    cardToDisplay: Card,
+    cardsDrawn: Card[],
+}
+
+interface NotifCardsDrawn {
+    playerId: number,
+    cardsDrawn: Card[]
 }

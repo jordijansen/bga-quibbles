@@ -82,6 +82,9 @@ class Quibbles implements QuibblesGame {
             case 'playerTurnAddCollection':
                 this.onEnteringPlayerTurnAddCollection(args.args);
                 break;
+            case 'playerTurnPass':
+                this.onEnteringPlayerTurnPass();
+                break;
         }
     }
 
@@ -119,6 +122,12 @@ class Quibbles implements QuibblesGame {
         }
     }
 
+    private onEnteringPlayerTurnPass() {
+        if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.setHandCardsSelectable('single');
+        }
+    }
+
     public onLeavingState(stateName: string) {
         log( 'Leaving state: '+stateName );
 
@@ -128,6 +137,9 @@ class Quibbles implements QuibblesGame {
                 break;
             case 'playerTurnTakeConfirm':
                 this.onLeavingPlayerTurnTakeConfirm();
+                break;
+            case 'playerTurnPass':
+                this.onLeavingPlayerTurnPass();
                 break;
         }
     }
@@ -139,6 +151,10 @@ class Quibbles implements QuibblesGame {
     private onLeavingPlayerTurnTakeConfirm() {
         this.cardsManager.unsetCardsToDiscard();
         this.cardsManager.setDisplayCardsSelectableSets('none');
+    }
+
+    private onLeavingPlayerTurnPass() {
+        this.cardsManager.setHandCardsSelectable('none');
     }
 
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
@@ -164,10 +180,13 @@ class Quibbles implements QuibblesGame {
                         cardsThatCanBeAdded.forEach(cardThatCanBeAdded => (this as any).addActionButton(`addCardToCollection${cardThatCanBeAdded.card_type}`, _("Add") + ` ${cardThatCanBeAdded.card_type}`, () => (this as any).addCardToCollection(Number(cardThatCanBeAdded.card_type))))
                     }
                     (this as any).addActionButton('endTurn', _("End Turn"), () => (this as any).endTurn());
-
+                    break;
+                case 'playerTurnPass':
+                    (this as any).addActionButton('passConfirm', _("Confirm Card"), () => (this as any).passConfirm());
+                    break;
             }
 
-            if (['playerTurnTake', 'playerTurnTakeConfirm'].includes(stateName) && args.canCancelMoves) {
+            if (['playerTurnTake', 'playerTurnTakeConfirm', 'playerTurnPass'].includes(stateName) && args.canCancelMoves) {
                 (this as any).addActionButton(`undoLastMoves`, _("Undo last moves"), () => this.undoLastMoves(), null, null, 'gray');
             }
         }
@@ -188,7 +207,7 @@ class Quibbles implements QuibblesGame {
 
     private takeConfirm() {
         const selectedSets = this.cardsManager.selectedSets;
-        this.takeAction("takeConfirm", {selectedSets: JSON.stringify(selectedSets)})
+        this.wrapInConfirm(() => this.takeAction("takeConfirm", {selectedSets: JSON.stringify(selectedSets)}));
     }
 
     private endTurn() {
@@ -197,6 +216,28 @@ class Quibbles implements QuibblesGame {
 
     private addCardToCollection(type: number) {
         this.takeAction("addCardToCollection", {type, cardIdToDiscard: null});
+    }
+
+    private passConfirm() {
+        const selectedCards = this.cardsManager.getSelectedPlayerHandCards();
+        const cardId = selectedCards.length > 0 ? selectedCards[0].id : null;
+        const performAction = () => this.takeAction("pass", {cardId});
+        if (cardId) {
+            this.wrapInConfirm(performAction);
+        } else {
+            // This fails because no card selected, but will be handled by the backend.
+            performAction();
+        }
+    }
+
+    private wrapInConfirm(runnable: () => void) {
+        if (this.isAskForConfirmation()) {
+            (this as any).confirmationDialog(_("This action can not be undone. Are you sure?"), () => {
+                runnable();
+            });
+        } else {
+            runnable();
+        }
     }
 
     ///////////////////////////////////////////////////
@@ -241,6 +282,10 @@ class Quibbles implements QuibblesGame {
         (this as any).scoreCtrl[playerId]?.toValue(score);
     }
 
+    private isAskForConfirmation() {
+        return true; // For now always ask for confirmation, might make this a preference later on.
+    }
+
     ///////////////////////////////////////////////////
     //// Reaction to cometD notifications
 
@@ -262,6 +307,8 @@ class Quibbles implements QuibblesGame {
             ['displayDiscarded', ANIMATION_MS],
             ['displayRefilled', ANIMATION_MS],
             ['cardAddedToCollection', ANIMATION_MS],
+            ['passConfirmed', ANIMATION_MS],
+            ['cardsDrawn', ANIMATION_MS]
         ];
 
         notifs.forEach((notif) => {
@@ -298,6 +345,7 @@ class Quibbles implements QuibblesGame {
         log('notif_displayRefilled: ');
         log(notif);
 
+        this.cardsManager.setDeckCount(notif.args.deckCount);
         this.cardsManager.addCardsToDisplayFromDeck(notif.args.displayCards);
     }
 
@@ -312,5 +360,29 @@ class Quibbles implements QuibblesGame {
         this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
 
         this.cardsManager.addCardToCollection(notif.args.cardCollected, notif.args.playerId);
+    }
+
+    notif_passConfirmed(notif: Notif<NotifPassConfirmed>) {
+        log('notif_passConfirmed: ');
+        log(notif);
+
+        this.cardsManager.setDeckCount(notif.args.deckCount);
+        this.cardsManager.addCardsToDisplay([notif.args.cardToDisplay])
+
+        if (this.getPlayerId() !== notif.args.playerId) {
+            this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn)
+        }
+
+        this.playerManager.setHandCounter(notif.args.playerId, notif.args.handCount);
+
+    }
+
+    notif_cardsDrawn(notif: Notif<NotifCardsDrawn>) {
+        log('notif_cardsDrawn: ');
+        log(notif);
+        // Only received by the player that has drawn cards
+        if (this.getPlayerId() === notif.args.playerId) {
+            this.cardsManager.addCardsToPlayerHandFromDeck(notif.args.playerId, notif.args.cardsDrawn)
+        }
     }
 }
