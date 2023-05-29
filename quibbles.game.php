@@ -293,22 +293,15 @@ class Quibbles extends Table
 
     function zombieTurn( $state, $active_player )
     {
-    	$statename = $state['name'];
-    	
+        $statename = $state['name'];
+
         if ($state['type'] === "activeplayer") {
             switch ($statename) {
                 default:
-                    $this->gamestate->nextState( "zombiePass" );
-                	break;
+                    $this->gamestate->jumpToState(ST_NEXT_PLAYER_ID);
+                    break;
             }
 
-            return;
-        }
-
-        if ($state['type'] === "multipleactiveplayer") {
-            // Make sure player is in a non blocking status for role turn
-            $this->gamestate->setPlayerNonMultiactive( $active_player, '' );
-            
             return;
         }
 

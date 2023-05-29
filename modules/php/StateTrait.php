@@ -28,12 +28,14 @@ trait StateTrait {
             ]);
         }
 
-        $cardsInDisplay = $this->cardManager->fillDisplay();
-        self::notifyAllPlayers('displayRefilled', clienttranslate("Card display refilled"), [
-            'deckCount' => $this->cardManager->countCardsInLocation(ZONE_DECK),
-            'displayCards' => $cardsInDisplay
-        ]);
-
+        if (sizeof($this->cardManager->getCardsInLocation(ZONE_DISPLAY)) < DISPLAY_CARD_SIZE) {
+            $cardsInDisplay = $this->cardManager->fillDisplay();
+            self::notifyAllPlayers('displayRefilled', clienttranslate("Card display refilled"), [
+                'deckCount' => $this->cardManager->countCardsInLocation(ZONE_DECK),
+                'displayCards' => $cardsInDisplay
+            ]);
+        }
+        
         // If the active player has emptied their hand, all players have to discard their hands and get 3 new cards.
         if ($this->cardManager->countCardsInLocation(ZONE_PLAYER_HAND, $this->getActivePlayerId()) == 0) {
             self::notifyAllPlayers('handEmptied', clienttranslate('${player_name} has emptied their hand, all other players discard their hand'), [
@@ -68,11 +70,6 @@ trait StateTrait {
                 ]);
             }
         }
-
-        self::notifyAllPlayers('displayRefilled', clienttranslate("Card display refilled"), [
-            'deckCount' => $this->cardManager->countCardsInLocation(ZONE_DECK),
-            'displayCards' => $cardsInDisplay
-        ]);
 
         $this->deleteGlobalVariables([UNDO, TAKE]);
         $this->setGameStateValue(CANCELLABLE_MOVES, 0);
