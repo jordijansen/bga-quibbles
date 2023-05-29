@@ -186,7 +186,7 @@ class Quibbles implements QuibblesGame {
     //
     public onUpdateActionButtons(stateName: string, args: any) {
 
-        if ((this as any).isCurrentPlayerActive()) {
+        if ((this as any).isCurrentPlayerActive() && !this.isReadOnly()) {
             switch (stateName) {
                 case 'playerTurn':
                     (this as any).addActionButton('playerTurnTake', _("TAKE"), () => (this as any).chooseAction("take"));

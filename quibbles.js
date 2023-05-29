@@ -1626,8 +1626,7 @@ var CardsManager = /** @class */ (function (_super) {
         for (var playersKey in gameData.players) {
             var playerId = Number(playersKey);
             if (this.quibblesGame.getPlayerId() === playerId &&
-                this.quibblesGame.getPlayer(playerId).self &&
-                !this.quibblesGame.isReadOnly()) {
+                this.quibblesGame.getPlayer(playerId).self) {
                 this.playerHand = new LineFitPositionStock(this, $('player-hand'), { sort: sortFunction('type') });
                 this.playerHand.addCards(gameData.players[playersKey].hand);
             }
@@ -1732,8 +1731,7 @@ var CardsManager = /** @class */ (function (_super) {
     CardsManager.prototype.addCardsToPlayerHand = function (playerId, cards, animation) {
         if (animation === void 0) { animation = {}; }
         if (this.quibblesGame.getPlayerId() === playerId &&
-            this.quibblesGame.getPlayer(playerId).self &&
-            !this.quibblesGame.isReadOnly()) {
+            this.quibblesGame.getPlayer(playerId).self) {
             this.playerHand.addCards(cards, animation);
         }
         else {
@@ -1962,7 +1960,7 @@ var Quibbles = /** @class */ (function () {
     //
     Quibbles.prototype.onUpdateActionButtons = function (stateName, args) {
         var _this = this;
-        if (this.isCurrentPlayerActive()) {
+        if (this.isCurrentPlayerActive() && !this.isReadOnly()) {
             switch (stateName) {
                 case 'playerTurn':
                     this.addActionButton('playerTurnTake', _("TAKE"), function () { return _this.chooseAction("take"); });

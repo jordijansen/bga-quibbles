@@ -52,8 +52,7 @@ class CardsManager extends CardManager<Card> {
         for (let playersKey in gameData.players) {
             const playerId = Number(playersKey);
             if (this.quibblesGame.getPlayerId() === playerId &&
-                this.quibblesGame.getPlayer(playerId).self &&
-                !this.quibblesGame.isReadOnly()) {
+                this.quibblesGame.getPlayer(playerId).self) {
                 this.playerHand = new LineFitPositionStock<Card>(this, $('player-hand'), {sort: sortFunction('type')});
                 this.playerHand.addCards(gameData.players[playersKey].hand)
             } else {
@@ -162,8 +161,7 @@ class CardsManager extends CardManager<Card> {
 
     public addCardsToPlayerHand(playerId: number, cards: Card[], animation: CardAnimation<Card> = {}) {
         if (this.quibblesGame.getPlayerId() === playerId &&
-            this.quibblesGame.getPlayer(playerId).self &&
-            !this.quibblesGame.isReadOnly()) {
+            this.quibblesGame.getPlayer(playerId).self) {
             this.playerHand.addCards(cards, animation);
         } else {
             this.playerStocks[playerId].addCards(cards, animation);
