@@ -191,7 +191,7 @@ class Quibbles implements QuibblesGame {
                 case 'playerTurnAddCollection':
                     const cardsThatCanBeAdded = this.findCollectionAddCards(args.playerHandTypeCount);
                     if (cardsThatCanBeAdded.length > 0) {
-                        cardsThatCanBeAdded.forEach(cardThatCanBeAdded => (this as any).addActionButton(`addCardToCollection${cardThatCanBeAdded.card_type}`, _("Add") + ` ${cardThatCanBeAdded.card_type}`, () => (this as any).addCardToCollection(Number(cardThatCanBeAdded.card_type))))
+                        cardsThatCanBeAdded.forEach(cardThatCanBeAdded => (this as any).addActionButton(`addCardToCollection${cardThatCanBeAdded.card_type}`, _("Add") + ` ${this.getTypeIcon(cardThatCanBeAdded.card_type)}`, () => (this as any).addCardToCollection(Number(cardThatCanBeAdded.card_type))))
                     }
                     (this as any).addActionButton('endTurn', _("End Turn"), () => (this as any).endTurn());
                     break;
@@ -431,5 +431,29 @@ class Quibbles implements QuibblesGame {
         log(notif);
 
         this.cardsManager.deckReshuffled(notif.args.deckCount);
+    }
+
+    public format_string_recursive(log: string, args: any) {
+        try {
+            if (log && args && !args.processed) {
+                if (args.cardSet) {
+                    if (Array.isArray(args.cardSet)) {
+                        args.cardSet = args.cardSet.map(cardType => this.getTypeIcon(cardType)).join(",")
+                    }
+                }
+                if (args.cardSets) {
+                    if (Array.isArray(args.cardSets)) {
+                        args.cardSets = args.cardSets.map(cardSet => cardSet.map(cardType => this.getTypeIcon(cardType)).join(",")).join(" - ")
+                    }
+                }
+            }
+        } catch (e) {
+            console.error(log, args, "Exception thrown", e.stack);
+        }
+        return (this as any).inherited(arguments);
+    }
+
+    private getTypeIcon(type) {
+        return `<span class="quibbles-icon type-icon" data-type="${type}">${type}</span>`;
     }
 }

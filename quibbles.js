@@ -1966,7 +1966,7 @@ var Quibbles = /** @class */ (function () {
                 case 'playerTurnAddCollection':
                     var cardsThatCanBeAdded = this.findCollectionAddCards(args.playerHandTypeCount);
                     if (cardsThatCanBeAdded.length > 0) {
-                        cardsThatCanBeAdded.forEach(function (cardThatCanBeAdded) { return _this.addActionButton("addCardToCollection".concat(cardThatCanBeAdded.card_type), _("Add") + " ".concat(cardThatCanBeAdded.card_type), function () { return _this.addCardToCollection(Number(cardThatCanBeAdded.card_type)); }); });
+                        cardsThatCanBeAdded.forEach(function (cardThatCanBeAdded) { return _this.addActionButton("addCardToCollection".concat(cardThatCanBeAdded.card_type), _("Add") + " ".concat(_this.getTypeIcon(cardThatCanBeAdded.card_type)), function () { return _this.addCardToCollection(Number(cardThatCanBeAdded.card_type)); }); });
                     }
                     this.addActionButton('endTurn', _("End Turn"), function () { return _this.endTurn(); });
                     break;
@@ -2166,6 +2166,30 @@ var Quibbles = /** @class */ (function () {
         log('notif_deckReshuffled: ');
         log(notif);
         this.cardsManager.deckReshuffled(notif.args.deckCount);
+    };
+    Quibbles.prototype.format_string_recursive = function (log, args) {
+        var _this = this;
+        try {
+            if (log && args && !args.processed) {
+                if (args.cardSet) {
+                    if (Array.isArray(args.cardSet)) {
+                        args.cardSet = args.cardSet.map(function (cardType) { return _this.getTypeIcon(cardType); }).join(",");
+                    }
+                }
+                if (args.cardSets) {
+                    if (Array.isArray(args.cardSets)) {
+                        args.cardSets = args.cardSets.map(function (cardSet) { return cardSet.map(function (cardType) { return _this.getTypeIcon(cardType); }).join(","); }).join(" - ");
+                    }
+                }
+            }
+        }
+        catch (e) {
+            console.error(log, args, "Exception thrown", e.stack);
+        }
+        return this.inherited(arguments);
+    };
+    Quibbles.prototype.getTypeIcon = function (type) {
+        return "<span class=\"quibbles-icon type-icon\" data-type=\"".concat(type, "\">").concat(type, "</span>");
     };
     return Quibbles;
 }());

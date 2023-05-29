@@ -171,7 +171,7 @@ trait ActionTrait {
             'playerScore' => $playerScore,
             'cardsDiscarded' => $this->cardManager->getCards($cardIdsToDiscard),
             'cardCollected' => $this->cardManager->getCard($cardToAdd->id),
-            'cardSet' => (int) $cardToAdd->type
+            'cardSet' => [(int) $cardToAdd->type]
         ]);
 
         $this->gamestate->nextState(ST_NEXT_PLAYER);
@@ -202,7 +202,7 @@ trait ActionTrait {
             'cardToDisplay' => $this->cardManager->getCard($card->id),
             'cardsDrawn' => array_map(fn($card) => Card::onlyPublicInfo($card), $cardsDrawn), // Only return the public info for all players
             'nrOfCardsDrawn' => sizeof($cardsDrawn),
-            'cardSet' => (int) $card->type
+            'cardSet' => [(int) $card->type]
         ]);
 
         // Also notify the player of the real cards drawn.

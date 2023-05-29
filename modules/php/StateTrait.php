@@ -30,7 +30,7 @@ trait StateTrait {
 
         if (sizeof($this->cardManager->getCardsInLocation(ZONE_DISPLAY)) < DISPLAY_CARD_SIZE) {
             $cardsInDisplay = $this->cardManager->fillDisplay();
-            self::notifyAllPlayers('displayRefilled', clienttranslate("Card display refilled"), [
+            self::notifyAllPlayers('displayRefilled', '', [
                 'deckCount' => $this->cardManager->countCardsInLocation(ZONE_DECK),
                 'displayCards' => $cardsInDisplay
             ]);
