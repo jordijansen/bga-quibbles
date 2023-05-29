@@ -74,8 +74,6 @@ trait StateTrait {
             'displayCards' => $cardsInDisplay
         ]);
 
-        // TODO Note: if the draw pile is empty, shuffle the discard pile and form a new pile.
-
         $this->deleteGlobalVariables([UNDO, TAKE]);
         $this->setGameStateValue(CANCELLABLE_MOVES, 0);
 
@@ -84,7 +82,7 @@ trait StateTrait {
 
         $this->giveExtraTime($playerId);
 
-        $endGame = sizeof($this->getCollectionFromDB("SELECT player_id FROM player WHERE player_score >= 21")) > 0;
+        $endGame = sizeof($this->getCollectionFromDB("SELECT player_id FROM player WHERE player_score >= " . WINNING_SCORE)) > 0;
 
         $this->gamestate->nextState($endGame ? ST_GAME_END : ST_PLAYER_TURN);
 

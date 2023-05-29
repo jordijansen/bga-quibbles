@@ -174,9 +174,8 @@ class Quibbles extends Table
     */
     function getGameProgression()
     {
-        // TODO: compute and return the game progression
-
-        return 0;
+        $highestScore = $this->getUniqueValueFromDB("SELECT MAX(player_score) FROM player");
+        return (100 / WINNING_SCORE) * $highestScore;
     }
 
 
