@@ -132,7 +132,9 @@ class Quibbles implements QuibblesGame {
     }
 
     private onEnteringDiscardCollectionCard() {
-        this.cardsManager.setCollectionCardsSelectableForDiscard('single', this.getPlayerId())
+        if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.setCollectionCardsSelectableForDiscard('single', this.getPlayerId())
+        }
     }
 
     public onLeavingState(stateName: string) {
@@ -155,20 +157,28 @@ class Quibbles implements QuibblesGame {
     }
 
     private onLeavingPlayerTurnTake() {
-        this.cardsManager.setHandCardsSelectable('none');
+        if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.setHandCardsSelectable('none');
+        }
     }
 
     private onLeavingPlayerTurnTakeConfirm() {
-        this.cardsManager.unsetCardsToDiscardPlayerHand();
-        this.cardsManager.setDisplayCardsSelectableSets('none');
+        if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.unsetCardsToDiscardPlayerHand();
+            this.cardsManager.setDisplayCardsSelectableSets('none');
+        }
     }
 
     private onLeavingPlayerTurnPass() {
-        this.cardsManager.setHandCardsSelectable('none');
+        if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.setHandCardsSelectable('none');
+        }
     }
 
     private onLeavingDiscardCollectionCard() {
-        this.cardsManager.setCollectionCardsSelectableForDiscard('none', this.getPlayerId());
+        if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.setCollectionCardsSelectableForDiscard('none', this.getPlayerId());
+        }
     }
 
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the

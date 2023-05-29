@@ -1640,7 +1640,8 @@ var CardsManager = /** @class */ (function (_super) {
     };
     CardsManager.prototype.setHandCardsSelectable = function (selectionMode, maxTotalValue) {
         var _this = this;
-        this.playerHand.setSelectionMode(selectionMode);
+        var _a;
+        (_a = this.playerHand) === null || _a === void 0 ? void 0 : _a.setSelectionMode(selectionMode);
         if (selectionMode != 'none') {
             if (maxTotalValue) {
                 this.playerHand.onSelectionChange = (function (selection) {
@@ -1914,7 +1915,9 @@ var Quibbles = /** @class */ (function () {
         }
     };
     Quibbles.prototype.onEnteringDiscardCollectionCard = function () {
-        this.cardsManager.setCollectionCardsSelectableForDiscard('single', this.getPlayerId());
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.setCollectionCardsSelectableForDiscard('single', this.getPlayerId());
+        }
     };
     Quibbles.prototype.onLeavingState = function (stateName) {
         log('Leaving state: ' + stateName);
@@ -1934,17 +1937,25 @@ var Quibbles = /** @class */ (function () {
         }
     };
     Quibbles.prototype.onLeavingPlayerTurnTake = function () {
-        this.cardsManager.setHandCardsSelectable('none');
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.setHandCardsSelectable('none');
+        }
     };
     Quibbles.prototype.onLeavingPlayerTurnTakeConfirm = function () {
-        this.cardsManager.unsetCardsToDiscardPlayerHand();
-        this.cardsManager.setDisplayCardsSelectableSets('none');
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.unsetCardsToDiscardPlayerHand();
+            this.cardsManager.setDisplayCardsSelectableSets('none');
+        }
     };
     Quibbles.prototype.onLeavingPlayerTurnPass = function () {
-        this.cardsManager.setHandCardsSelectable('none');
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.setHandCardsSelectable('none');
+        }
     };
     Quibbles.prototype.onLeavingDiscardCollectionCard = function () {
-        this.cardsManager.setCollectionCardsSelectableForDiscard('none', this.getPlayerId());
+        if (this.isCurrentPlayerActive()) {
+            this.cardsManager.setCollectionCardsSelectableForDiscard('none', this.getPlayerId());
+        }
     };
     // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
     //                        action status bar (ie: the HTML links in the status bar).

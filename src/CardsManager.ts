@@ -65,7 +65,7 @@ class CardsManager extends CardManager<Card> {
     }
 
     public setHandCardsSelectable(selectionMode: CardSelectionMode, maxTotalValue?: number) {
-        this.playerHand.setSelectionMode(selectionMode)
+        this.playerHand?.setSelectionMode(selectionMode)
         if (selectionMode != 'none') {
             if (maxTotalValue) {
                 this.playerHand.onSelectionChange = ((selection) => {
