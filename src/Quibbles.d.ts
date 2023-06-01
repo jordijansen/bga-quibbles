@@ -79,6 +79,12 @@ interface NotifCardAddedToCollection {
     cardCollected: Card
 }
 
+interface NotifCardRemovedFromCollection {
+    playerId: number,
+    player_name: string,
+    cardRemoved: Card
+}
+
 interface NotifPassConfirmed {
     playerId: number,
     player_name: string,

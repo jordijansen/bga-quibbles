@@ -2106,6 +2106,7 @@ var Quibbles = /** @class */ (function () {
             ['displayDiscarded', ANIMATION_MS],
             ['displayRefilled', ANIMATION_MS],
             ['cardAddedToCollection', ANIMATION_MS],
+            ['cardRemovedFromCollection', ANIMATION_MS],
             ['passConfirmed', ANIMATION_MS],
             ['cardsDrawn', ANIMATION_MS],
             ['handDiscarded', ANIMATION_MS],
@@ -2147,6 +2148,11 @@ var Quibbles = /** @class */ (function () {
         this.cardsManager.discardCardsFromPlayer(notif.args.cardsDiscarded, notif.args.playerId);
         this.cardsManager.addCardToCollection(notif.args.cardCollected, notif.args.playerId);
     };
+    Quibbles.prototype.notif_cardRemovedFromCollection = function (notif) {
+        log('notif_cardRemovedFromCollection: ');
+        log(notif);
+        this.cardsManager.discardCards([notif.args.cardRemoved]);
+    };
     Quibbles.prototype.notif_passConfirmed = function (notif) {
         log('notif_passConfirmed: ');
         log(notif);
@@ -2180,16 +2186,14 @@ var Quibbles = /** @class */ (function () {
         var _this = this;
         try {
             if (log && args && !args.processed) {
-                if (args.cardSet) {
-                    if (Array.isArray(args.cardSet)) {
-                        args.cardSet = args.cardSet.map(function (cardType) { return _this.getTypeIcon(cardType); }).join(",");
+                Object.keys(args).forEach(function (argKey) {
+                    if (argKey.startsWith('cardSet') && Array.isArray(args[argKey])) {
+                        args[argKey] = args[argKey].map(function (cardType) { return _this.getTypeIcon(cardType); }).join(",");
                     }
-                }
-                if (args.cardSets) {
-                    if (Array.isArray(args.cardSets)) {
-                        args.cardSets = args.cardSets.map(function (cardSet) { return cardSet.map(function (cardType) { return _this.getTypeIcon(cardType); }).join(","); }).join(" - ");
+                    if (argKey.startsWith('cardSets') && Array.isArray(args[argKey])) {
+                        args[argKey] = args[argKey].map(function (cardSet) { return cardSet.map(function (cardType) { return _this.getTypeIcon(cardType); }).join(","); }).join(" - ");
                     }
-                }
+                });
             }
         }
         catch (e) {

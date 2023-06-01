@@ -131,48 +131,61 @@ trait ActionTrait {
        $this->gamestate->nextState(ST_NEXT_PLAYER);
    }
 
-    public function addCardToCollection($type, $cardIdToDiscard) {
+    public function addCardToCollection($type, $cardIdToRemove) {
         self::checkAction(ACT_ADD_COLLECTION);
 
         $playerId = intval($this->getActivePlayerId());
-        $cardIdsToDiscard = [];
         $cardsInCollection = $this->cardManager->getCardsInLocation(ZONE_PLAYER_AREA, $playerId);
+        // If a player already has 6 cards in their collection they need to remove one
         if (sizeof($cardsInCollection) == 6) {
-            if (isset($cardIdToDiscard)) {
-                $cardToDiscard = $this->cardManager->getCard($cardIdToDiscard);
-                if ($cardToDiscard->location != ZONE_PLAYER_AREA || $cardToDiscard->location_arg != $playerId) {
+            if (isset($cardIdToRemove)) {
+                $cardToRemove = $this->cardManager->getCard($cardIdToRemove);
+                if ($cardToRemove->location != ZONE_PLAYER_AREA || $cardToRemove->location_arg != $playerId) {
                     throw new BgaUserException("Provided card to discard is not in your collection");
                 }
-                $cardIdsToDiscard = [$cardToDiscard->id];
+                $this->cardManager->moveCard($cardToRemove->id, ZONE_DISCARD);
             } else {
                 throw new BgaUserException("You already have 6 cards in your collection, you need to discard a card to add a new one");
             }
         }
 
+        // To add a card to their collection they need to discard a minimum of type cards (to add a two you need to discard 2 two's)
         $cardsOfTypeInHand = $this->cardManager->getCardsOfTypeInLocation($type, ZONE_PLAYER_HAND, $playerId);
         if (sizeof($cardsOfTypeInHand) == 0 || sizeof($cardsOfTypeInHand) < $type) {
             throw new BgaUserException("You don't have enough cards to add a ${$type} to your collection");
         }
 
+        // The first card is added to the collection, others of the same type are discarded
         $cardToAdd = reset($cardsOfTypeInHand);
-        $cardsToDiscard = array_slice(array_values($cardsOfTypeInHand), 1, $type - 1);
-        $cardIdsToDiscard = [...$cardIdsToDiscard, ...array_map(fn($card) => $card->id, $cardsToDiscard)];
+        $cardsToDiscard = array_slice(array_values($cardsOfTypeInHand), 1, sizeof($cardsOfTypeInHand) - 1);
 
-        $this->cardManager->moveCards($cardIdsToDiscard, ZONE_DISCARD);
+        $this->cardManager->moveCards(array_map(fn($card) => $card->id, $cardsToDiscard), ZONE_DISCARD);
         $this->cardManager->moveCard($cardToAdd->id, ZONE_PLAYER_AREA, $playerId);
 
+        // Recalculate score after adding to collection
         $playerScore = array_sum(array_map(fn($card) => (int) $card->type, array_values($this->cardManager->getCardsInLocation(ZONE_PLAYER_AREA, $playerId))));
         $this->DbQuery("UPDATE player SET player_score = $playerScore WHERE player_id = $playerId");
 
-        self::notifyAllPlayers('cardAddedToCollection', clienttranslate('${player_name} adds ${cardSet} to their collection'), [
+        self::notifyAllPlayers('cardAddedToCollection', clienttranslate('${player_name} discards ${cardSet1} from hand and adds ${cardSet2} to their collection'), [
             'playerId' => $playerId,
             'player_name' => $this->getPlayerName($playerId),
             'handCount' => $this->cardManager->countCardsInLocation('hand', $playerId),
             'playerScore' => $playerScore,
-            'cardsDiscarded' => $this->cardManager->getCards($cardIdsToDiscard),
+            'cardsDiscarded' => $this->cardManager->getCards(array_map(fn($card) => $card->id, $cardsToDiscard)),
             'cardCollected' => $this->cardManager->getCard($cardToAdd->id),
-            'cardSet' => [(int) $cardToAdd->type]
+            'cardSet1' => array_map(fn($card) => $card->type, $this->cardManager->getCards(array_map(fn($card) => $card->id, $cardsToDiscard))),
+            'cardSet2' => [(int) $cardToAdd->type],
         ]);
+
+        if (isset($cardIdToRemove)) {
+            $removedCard = $this->cardManager->getCard($cardIdToRemove);
+            self::notifyAllPlayers('cardRemovedFromCollection', '${player_name} removes ${cardSet} from their collection (maximum number of cards in collection is 6)', [
+                'playerId' => $playerId,
+                'player_name' => $this->getPlayerName($playerId),
+                'cardRemoved' => $removedCard,
+                'cardSet' => [(int) $removedCard->type]
+            ]);
+        }
 
         $this->gamestate->nextState(ST_NEXT_PLAYER);
     }
