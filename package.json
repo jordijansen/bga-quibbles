@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "bga-zoom": "thoun/bga-zoom#0.1.0",
-    "bga-cards": "thoun/bga-cards#1.1.1"
+    "bga-cards": "thoun/bga-cards#2.0.2"
   },
   "devDependencies": {
     "sass": "^1.62.1",

@@ -200,10 +200,9 @@ class CardsManager extends CardManager<Card> {
     }
 
     deckReshuffled(deckCount: number) {
-        this.deck.addCards(this.discard.getCards())
-
+        this.discard.removeAll();
         this.discard.setCardNumber(0);
-        this.deck.removeAll();
         this.deck.setCardNumber(deckCount, {id: -1});
+        this.deck.shuffle();
     }
 }
