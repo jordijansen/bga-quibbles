@@ -74,6 +74,9 @@ class CardsManager extends CardManager<Card> {
                     const selectableCards = this.playerHand.getCards()
                         .filter(card => selection.includes(card) || Number(card.type) <= remainingValue)
                     this.playerHand.setSelectableCards(selectableCards)
+
+                    this.unsetDisplayDisabledCards();
+                    this.setAllOtherDisplayCardsToDisabled(this.determineSelectableCardsForTake(selection.length > 1, selection.map(card => Number(card.type)).reduce((sum, current) => sum + current, 0)));
                 })
             } else {
                 this.playerHand.onSelectionChange = undefined;
@@ -85,7 +88,7 @@ class CardsManager extends CardManager<Card> {
         this.selectedSets = [];
         this.display.setSelectionMode(selectionMode);
         if (selectionMode != 'none') {
-            this.display.setSelectableCards(this.display.getCards().filter(card => Number(card.type) < totalDiscardValue))
+            this.display.setSelectableCards(this.determineSelectableCardsForTake(false, totalDiscardValue))
             this.display.onSelectionChange = ((selection) => {
                 console.log(selection)
                 const selectedValue = selection.map(card => Number(card.type)).reduce((sum, current) => sum + current, 0);
@@ -94,7 +97,7 @@ class CardsManager extends CardManager<Card> {
                 if (remainingValue === 0) {
                     this.selectedSets.push(selection.map(card => card.id));
                     this.playerHand.addCards(selection);
-                    this.display.setSelectableCards(this.display.getCards().filter(card => Number(card.type) < totalDiscardValue))
+                    this.display.setSelectableCards(this.determineSelectableCardsForTake(false, totalDiscardValue))
                 } else {
                     const selectableCards = this.display.getCards()
                         .filter(card => selection.includes(card) || (Number(card.type) <= remainingValue && Number(card.type) < totalDiscardValue))
@@ -104,11 +107,22 @@ class CardsManager extends CardManager<Card> {
         }
     }
 
+    public determineSelectableCardsForTake(isSingleTake: boolean, totalDiscardValue?: number) {
+        if (isSingleTake) {
+            return this.display.getCards().filter(card => Number(card.type) === totalDiscardValue);
+        } else {
+            const listOfNumbers = this.display.getCards().map(card => Number(card.type)).sort((a, b) => a - b);
+            let result = [];
+            this.unique_combination(0, 0, totalDiscardValue, [], listOfNumbers, result);
+            return this.display.getCards().filter(card => result.includes(Number(card.type)));
+        }
+    }
+
     public setDisplayCardsSelectableSingle(selectionMode: CardSelectionMode, totalDiscardValue?: number) {
         this.selectedSets = [];
         this.display.setSelectionMode(selectionMode);
         if (selectionMode != 'none') {
-            this.display.setSelectableCards(this.display.getCards().filter(card => Number(card.type) === totalDiscardValue))
+            this.display.setSelectableCards(this.determineSelectableCardsForTake(true, totalDiscardValue))
             this.display.onSelectionChange = ((selection) => {
                 if (selection.length == 1) {
                     this.selectedSets.push(selection.map(card => card.id));
@@ -178,6 +192,19 @@ class CardsManager extends CardManager<Card> {
             .forEach(card => card.classList.remove('to-discard'))
     }
 
+    setAllOtherDisplayCardsToDisabled(cards: Card[]) {
+        this.display.getCards()
+            .filter(card => !cards.includes(card))
+            .map(card => this.getCardElement(card))
+            .forEach(card => card.classList.add('disabled'))
+    }
+
+    unsetDisplayDisabledCards() {
+        this.display.getCards()
+            .map(card => this.getCardElement(card))
+            .forEach(card => card.classList.remove('disabled'))
+    }
+
     unsetCardsToDiscardPlayerHand() {
         this.unsetCardsToDiscard(this.playerHand.getCards());
     }
@@ -204,5 +231,36 @@ class CardsManager extends CardManager<Card> {
         this.discard.setCardNumber(0);
         this.deck.setCardNumber(deckCount, {id: -1});
         this.deck.shuffle();
+    }
+
+    private unique_combination(l, sum, K, local, A, result) {
+        // If a unique combination is found
+        if (sum == K && local.length > 1) {
+            const newResult = [...result, ...local];
+            result.pop();
+            result.push(...newResult)
+            return;
+        }
+
+        // For all other combinations
+        for (let i = l; i < A.length; i++) {
+
+            // Check if the sum exceeds K
+            if (sum + A[i] > K)
+                continue;
+
+            // Check if it is repeated or not
+            if (i > l && A[i] == A[i - 1])
+                continue;
+
+            // Take the element into the combination
+            local.push(A[i]);
+
+            // Recursive call
+            this.unique_combination(i + 1, sum + A[i], K, local, A, result);
+
+            // Remove element from the combination
+            local.pop();
+        }
     }
 }

@@ -124,6 +124,14 @@ $quibbles-color-purple: #7d347f;
     }
 }
 
+@mixin disabled {
+    &.disabled {
+        .card-side {
+            filter: contrast(0.6);
+        }
+    }
+}
+
 @mixin to-discard {
     &.to-discard {
         .card-side {
@@ -175,8 +183,8 @@ html, .mode_3d #game_play_area_background {
 }
 
 #bga-zoom-controls {
-    top: 10px !important;
-    right: $card-width + 20px !important;
+    top: 20px !important;
+    right: 10px !important;
 }
 
 .quibbles-card {
@@ -188,6 +196,7 @@ html, .mode_3d #game_play_area_background {
 
     @include selectable();
     @include selected();
+    @include disabled();
     @include to-discard();
 
     .card-sides {

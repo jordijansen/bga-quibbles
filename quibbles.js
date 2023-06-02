@@ -1934,6 +1934,8 @@ var CardsManager = /** @class */ (function (_super) {
                     var selectableCards = _this.playerHand.getCards()
                         .filter(function (card) { return selection.includes(card) || Number(card.type) <= remainingValue; });
                     _this.playerHand.setSelectableCards(selectableCards);
+                    _this.unsetDisplayDisabledCards();
+                    _this.setAllOtherDisplayCardsToDisabled(_this.determineSelectableCardsForTake(selection.length > 1, selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0)));
                 });
             }
             else {
@@ -1946,7 +1948,7 @@ var CardsManager = /** @class */ (function (_super) {
         this.selectedSets = [];
         this.display.setSelectionMode(selectionMode);
         if (selectionMode != 'none') {
-            this.display.setSelectableCards(this.display.getCards().filter(function (card) { return Number(card.type) < totalDiscardValue; }));
+            this.display.setSelectableCards(this.determineSelectableCardsForTake(false, totalDiscardValue));
             this.display.onSelectionChange = (function (selection) {
                 console.log(selection);
                 var selectedValue = selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0);
@@ -1954,7 +1956,7 @@ var CardsManager = /** @class */ (function (_super) {
                 if (remainingValue === 0) {
                     _this.selectedSets.push(selection.map(function (card) { return card.id; }));
                     _this.playerHand.addCards(selection);
-                    _this.display.setSelectableCards(_this.display.getCards().filter(function (card) { return Number(card.type) < totalDiscardValue; }));
+                    _this.display.setSelectableCards(_this.determineSelectableCardsForTake(false, totalDiscardValue));
                 }
                 else {
                     var selectableCards = _this.display.getCards()
@@ -1964,12 +1966,23 @@ var CardsManager = /** @class */ (function (_super) {
             });
         }
     };
+    CardsManager.prototype.determineSelectableCardsForTake = function (isSingleTake, totalDiscardValue) {
+        if (isSingleTake) {
+            return this.display.getCards().filter(function (card) { return Number(card.type) === totalDiscardValue; });
+        }
+        else {
+            var listOfNumbers = this.display.getCards().map(function (card) { return Number(card.type); }).sort(function (a, b) { return a - b; });
+            var result_1 = [];
+            this.unique_combination(0, 0, totalDiscardValue, [], listOfNumbers, result_1);
+            return this.display.getCards().filter(function (card) { return result_1.includes(Number(card.type)); });
+        }
+    };
     CardsManager.prototype.setDisplayCardsSelectableSingle = function (selectionMode, totalDiscardValue) {
         var _this = this;
         this.selectedSets = [];
         this.display.setSelectionMode(selectionMode);
         if (selectionMode != 'none') {
-            this.display.setSelectableCards(this.display.getCards().filter(function (card) { return Number(card.type) === totalDiscardValue; }));
+            this.display.setSelectableCards(this.determineSelectableCardsForTake(true, totalDiscardValue));
             this.display.onSelectionChange = (function (selection) {
                 if (selection.length == 1) {
                     _this.selectedSets.push(selection.map(function (card) { return card.id; }));
@@ -2033,6 +2046,19 @@ var CardsManager = /** @class */ (function (_super) {
         cards.map(function (card) { return _this.getCardElement(card); })
             .forEach(function (card) { return card.classList.remove('to-discard'); });
     };
+    CardsManager.prototype.setAllOtherDisplayCardsToDisabled = function (cards) {
+        var _this = this;
+        this.display.getCards()
+            .filter(function (card) { return !cards.includes(card); })
+            .map(function (card) { return _this.getCardElement(card); })
+            .forEach(function (card) { return card.classList.add('disabled'); });
+    };
+    CardsManager.prototype.unsetDisplayDisabledCards = function () {
+        var _this = this;
+        this.display.getCards()
+            .map(function (card) { return _this.getCardElement(card); })
+            .forEach(function (card) { return card.classList.remove('disabled'); });
+    };
     CardsManager.prototype.unsetCardsToDiscardPlayerHand = function () {
         this.unsetCardsToDiscard(this.playerHand.getCards());
     };
@@ -2054,6 +2080,30 @@ var CardsManager = /** @class */ (function (_super) {
         this.discard.setCardNumber(0);
         this.deck.setCardNumber(deckCount, { id: -1 });
         this.deck.shuffle();
+    };
+    CardsManager.prototype.unique_combination = function (l, sum, K, local, A, result) {
+        // If a unique combination is found
+        if (sum == K && local.length > 1) {
+            var newResult = __spreadArray(__spreadArray([], result, true), local, true);
+            result.pop();
+            result.push.apply(result, newResult);
+            return;
+        }
+        // For all other combinations
+        for (var i = l; i < A.length; i++) {
+            // Check if the sum exceeds K
+            if (sum + A[i] > K)
+                continue;
+            // Check if it is repeated or not
+            if (i > l && A[i] == A[i - 1])
+                continue;
+            // Take the element into the combination
+            local.push(A[i]);
+            // Recursive call
+            this.unique_combination(i + 1, sum + A[i], K, local, A, result);
+            // Remove element from the combination
+            local.pop();
+        }
     };
     return CardsManager;
 }(CardManager));
@@ -2221,6 +2271,7 @@ var Quibbles = /** @class */ (function () {
     };
     Quibbles.prototype.onLeavingPlayerTurnTake = function () {
         if (this.isCurrentPlayerActive()) {
+            this.cardsManager.unsetDisplayDisabledCards();
             this.cardsManager.setHandCardsSelectable('none');
         }
     };
@@ -2284,8 +2335,15 @@ var Quibbles = /** @class */ (function () {
         this.takeAction("chooseAction", { chosenAction: chosenAction });
     };
     Quibbles.prototype.takeConfirmDiscard = function () {
-        var cardIds = this.cardsManager.getSelectedPlayerHandCards().map(function (card) { return card.id; });
-        this.takeAction("takeConfirmDiscard", { cardIds: JSON.stringify(cardIds) });
+        var selectedPlayerHandCards = this.cardsManager.getSelectedPlayerHandCards();
+        var selectableCardsForTake = this.cardsManager.determineSelectableCardsForTake(selectedPlayerHandCards.length > 1, selectedPlayerHandCards.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0));
+        if (selectableCardsForTake.length > 0) {
+            var cardIds = selectedPlayerHandCards.map(function (card) { return card.id; });
+            this.takeAction("takeConfirmDiscard", { cardIds: JSON.stringify(cardIds) });
+        }
+        else {
+            this.showMessage(_("You can't take cards with this selection of hand cards"), 'error');
+        }
     };
     Quibbles.prototype.takeConfirm = function () {
         var _this = this;

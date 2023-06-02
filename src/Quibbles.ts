@@ -158,6 +158,7 @@ class Quibbles implements QuibblesGame {
 
     private onLeavingPlayerTurnTake() {
         if ((this as any).isCurrentPlayerActive()) {
+            this.cardsManager.unsetDisplayDisabledCards();
             this.cardsManager.setHandCardsSelectable('none');
         }
     }
@@ -229,8 +230,14 @@ class Quibbles implements QuibblesGame {
     }
 
     private takeConfirmDiscard() {
-        let cardIds = this.cardsManager.getSelectedPlayerHandCards().map(card => card.id);
-        this.takeAction("takeConfirmDiscard", {cardIds: JSON.stringify(cardIds)})
+        const selectedPlayerHandCards = this.cardsManager.getSelectedPlayerHandCards();
+        const selectableCardsForTake = this.cardsManager.determineSelectableCardsForTake(selectedPlayerHandCards.length > 1, selectedPlayerHandCards.map(card => Number(card.type)).reduce((sum, current) => sum + current, 0))
+        if (selectableCardsForTake.length > 0) {
+            let cardIds = selectedPlayerHandCards.map(card => card.id);
+            this.takeAction("takeConfirmDiscard", {cardIds: JSON.stringify(cardIds)})
+        } else {
+            (this as any).showMessage(_("You can't take cards with this selection of hand cards"), 'error')
+        }
     }
 
     private takeConfirm() {
