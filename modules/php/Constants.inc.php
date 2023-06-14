@@ -1,7 +1,7 @@
 <?php
 
 const DISPLAY_CARD_SIZE = 6;
-const INITIAL_HAND_SIZE = 3;
+const INITIAL_HAND_SIZE = 6;
 const PASS_ACTION_NR_OF_CARDS_TO_DRAW = 2;
 const WINNING_SCORE = 21;
 

@@ -55,9 +55,7 @@ class CardManager extends AbstractCardManager {
     private function determineTypeArgMaxForType($type) {
         switch ($type) {
             case 1:
-                return 16;
             case 2:
-                return 18;
             case 3:
                 return 20;
             case 4:

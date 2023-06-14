@@ -155,9 +155,12 @@ $quibbles-color-purple: #7d347f;
     .front[data-number="#{$number}"] {
         background-image: url("img/cards_#{$number}.png");
 
+        $maxRow: math.floor(math.div($max, 7));
         @for $i from 1 through $max {
+            $row: math.floor(math.div($i, 8)); // 7 Items per row, 8th item is on first row
+            $col: ($i - ($row * 7)) - 1;
             &[data-variation="#{$i}"] {
-                background-position: #{(math.div(100%, ($max - 1))*($i - 1))} 0;
+            background-position: #{$col * math.div(100%, 6)} #{$row * math.div(100%, $maxRow)};
             }
         }
     }
@@ -211,20 +214,105 @@ html, .mode_3d #game_play_area_background {
             &.back {
                 background-image: url("img/back.png");
                 background-position: 0 0;
-            }
-
-            &.front, &.back {
                 background-size: cover;
             }
         }
     }
 
-    @include quibbles-card-sprites(1, 16);
-    @include quibbles-card-sprites(2, 18);
-    @include quibbles-card-sprites(3, 20);
-    @include quibbles-card-sprites(4, 22);
-    @include quibbles-card-sprites(5, 24);
-    @include quibbles-card-sprites(6, 26);
+    .front[data-number="1"] {
+        background-image: url("img/cards_1.png");
+        background-size: auto 300%;
+        @for $row from 0 through 2 {
+            @for $column from 0 through 6 {
+                $type: ($row * 7) + ($column + 1);
+                @if $type <= 20 {
+                    &[data-variation="#{$type}"] {
+                        background-position: #{$column * math.div(100%, 6)} #{$row * math.div(100%, 2)};
+                    }
+                }
+            }
+        }
+    }
+
+    .front[data-number="2"] {
+        background-image: url("img/cards_2.png");
+        background-size: auto 300%;
+
+        @for $row from 0 through 2 {
+            @for $column from 0 through 6 {
+                $type: ($row * 7) + ($column + 1);
+                @if $type <= 20 {
+                    &[data-variation="#{$type}"] {
+                        background-position: #{$column * math.div(100%, 6)} #{$row * math.div(100%, 2)};
+                    }
+                }
+            }
+        }
+    }
+
+    .front[data-number="3"] {
+        background-image: url("img/cards_3.png");
+        background-size: auto 300%;
+
+        @for $row from 0 through 2 {
+            @for $column from 0 through 6 {
+                $type: ($row * 7) + ($column + 1);
+                @if $type <= 20 {
+                    &[data-variation="#{$type}"] {
+                        background-position: #{$column * math.div(100%, 6)} #{$row * math.div(100%, 2)};
+                    }
+                }
+            }
+        }
+    }
+
+    .front[data-number="4"] {
+        background-image: url("img/cards_4.png");
+        background-size: auto 400%;
+
+        @for $row from 0 through 3 {
+            @for $column from 0 through 6 {
+                $type: ($row * 7) + ($column + 1);
+                @if $type <= 22 {
+                    &[data-variation="#{$type}"] {
+                        background-position: #{$column * math.div(100%, 6)} #{$row * math.div(100%, 3)};
+                    }
+                }
+            }
+        }
+    }
+
+    .front[data-number="5"] {
+        background-image: url("img/cards_5.png");
+        background-size: auto 400%;
+
+        @for $row from 0 through 3 {
+            @for $column from 0 through 6 {
+                $type: ($row * 7) + ($column + 1);
+                @if $type <= 24 {
+                    &[data-variation="#{$type}"] {
+                        background-position: #{$column * math.div(100%, 6)} #{$row * math.div(100%, 3)};
+                    }
+                }
+            }
+        }
+    }
+
+    .front[data-number="6"] {
+        background-image: url("img/cards_6.png");
+        background-size: auto 400%;
+
+        @for $row from 0 through 3 {
+            @for $column from 0 through 6 {
+                $type: ($row * 7) + ($column + 1);
+                @if $type <= 26 {
+                    &[data-variation="#{$type}"] {
+                        background-position: #{$column * math.div(100%, 6)} #{$row * math.div(100%, 3)};
+                    }
+                }
+            }
+        }
+    }
 }
 
 .quibbles-icon {
