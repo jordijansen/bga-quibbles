@@ -90,7 +90,6 @@ class CardsManager extends CardManager<Card> {
         if (selectionMode != 'none') {
             this.display.setSelectableCards(this.determineSelectableCardsForTake(false, totalDiscardValue))
             this.display.onSelectionChange = ((selection) => {
-                console.log(selection)
                 const selectedValue = selection.map(card => Number(card.type)).reduce((sum, current) => sum + current, 0);
                 const remainingValue = totalDiscardValue - selectedValue;
 

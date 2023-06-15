@@ -1950,7 +1950,6 @@ var CardsManager = /** @class */ (function (_super) {
         if (selectionMode != 'none') {
             this.display.setSelectableCards(this.determineSelectableCardsForTake(false, totalDiscardValue));
             this.display.onSelectionChange = (function (selection) {
-                console.log(selection);
                 var selectedValue = selection.map(function (card) { return Number(card.type); }).reduce(function (sum, current) { return sum + current; }, 0);
                 var remainingValue = totalDiscardValue - selectedValue;
                 if (remainingValue === 0) {
