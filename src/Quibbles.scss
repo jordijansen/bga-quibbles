@@ -323,6 +323,18 @@ html, .mode_3d #game_play_area_background {
     }
 }
 
+.quibbles-row-title {
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Bungee", sans-serif;
+    position: absolute;
+    writing-mode: vertical-rl;
+    transform: rotate(-180deg);
+    text-align: center;
+    height: $card-height;
+    opacity: 0.5;
+}
+
 
 .quibbles {
     .quibbles-title-wrapper {

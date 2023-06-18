@@ -27,11 +27,13 @@
 <div id="quibbles-table" class="quibbles">
     <div id="quibbles-ui-row-2" class="quibbles-ui-row">
         <div class="whiteblock">
+            <h1 class="quibbles-row-title">{DISPLAY_TITLE}</h1>
             <div id="card-display"></div>
         </div>
     </div>
     <div id="quibbles-ui-row-3" class="quibbles-ui-row">
         <div class="whiteblock">
+            <h1 class="quibbles-row-title">{HAND_TITLE}</h1>
             <div id="player-hand"></div>
         </div>
     </div>

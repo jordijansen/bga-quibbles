@@ -42,7 +42,8 @@ class view_quibbles_quibbles extends game_view
 
         /*********** Place your code below:  ************/
 
-
+        $this->tpl['DISPLAY_TITLE'] = clienttranslate("DISPLAY");
+        $this->tpl['HAND_TITLE'] = clienttranslate("MY HAND");
         /*
         
         // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}

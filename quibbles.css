@@ -861,6 +861,18 @@ html .whiteblock, .mode_3d #game_play_area_background .whiteblock {
   font-family: "Bungee", sans-serif;
 }
 
+.quibbles-row-title {
+  font-size: 30px;
+  font-weight: bold;
+  font-family: "Bungee", sans-serif;
+  position: absolute;
+  writing-mode: vertical-rl;
+  transform: rotate(-180deg);
+  text-align: center;
+  height: 257px;
+  opacity: 0.5;
+}
+
 .quibbles .quibbles-title-wrapper {
   display: flex;
   justify-content: center;
