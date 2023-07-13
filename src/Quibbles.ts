@@ -18,6 +18,7 @@ class Quibbles implements QuibblesGame {
     private cardsManager: CardsManager;
     private playerManager: PlayerManager
     private zoomManager: ZoomManager;
+    private passInterval = undefined;
 
     constructor() {
 
@@ -186,6 +187,7 @@ class Quibbles implements QuibblesGame {
     //                        action status bar (ie: the HTML links in the status bar).
     //
     public onUpdateActionButtons(stateName: string, args: any) {
+        console.log('onUpdateActionButtons: ' + stateName)
 
         if ((this as any).isCurrentPlayerActive() && !this.isReadOnly()) {
             switch (stateName) {
@@ -205,6 +207,9 @@ class Quibbles implements QuibblesGame {
                         cardsThatCanBeAdded.forEach(cardThatCanBeAdded => (this as any).addActionButton(`addCardToCollection${cardThatCanBeAdded.card_type}`, _("Add") + ` ${this.getTypeIcon(cardThatCanBeAdded.card_type)}`, () => (this as any).addCardToCollection(Number(cardThatCanBeAdded.card_type))))
                     }
                     (this as any).addActionButton('endTurn', _("End Turn"), () => (this as any).endTurn());
+                    if (cardsThatCanBeAdded.length === 0) {
+                        this.addTimerButton($('endTurn'), 5);
+                    }
                     break;
                 case 'playerTurnPass':
                     (this as any).addActionButton('passConfirm', _("Confirm Card"), () => (this as any).passConfirm());
@@ -219,6 +224,27 @@ class Quibbles implements QuibblesGame {
                 (this as any).addActionButton('undoLastMoves', _("Undo last moves"), () => this.undoLastMoves(), null, null, 'gray');
             }
         }
+    }
+
+    private addTimerButton(button, duration: number) {
+        // Reduce the seconds every second, and if we reach 0 click the button
+        var txtButton = button.textContent;
+        button.textContent = txtButton + ' (' + duration + ')';
+        // Reduce the seconds every second, and if we reach 0 click the button
+        clearInterval(this.passInterval);
+        this.passInterval = setInterval(function () {
+            if (dojo.query(button).length == 0) {
+                clearInterval(this.passInterval);
+            } else {
+                duration -= 1;
+                if (duration == -1) {
+                    clearInterval(this.passInterval);
+                    button.click();
+                } else {
+                    button.textContent = txtButton + ' (' + duration + ')';
+                }
+            }
+        }.bind(this), 1000);
     }
 
     private undoLastMoves() {
@@ -246,6 +272,10 @@ class Quibbles implements QuibblesGame {
     }
 
     private endTurn() {
+        if (this.passInterval) {
+            clearInterval(this.passInterval)
+            this.passInterval = undefined;
+        }
         this.takeAction("endTurn")
     }
 

@@ -2149,6 +2149,7 @@ var TOOLTIP_DELAY = document.body.classList.contains('touch-device') ? 1500 : un
 var LOCAL_STORAGE_ZOOM_KEY = 'Quibbles-zoom';
 var Quibbles = /** @class */ (function () {
     function Quibbles() {
+        this.passInterval = undefined;
     }
     /*
         setup:
@@ -2295,6 +2296,7 @@ var Quibbles = /** @class */ (function () {
     //
     Quibbles.prototype.onUpdateActionButtons = function (stateName, args) {
         var _this = this;
+        console.log('onUpdateActionButtons: ' + stateName);
         if (this.isCurrentPlayerActive() && !this.isReadOnly()) {
             switch (stateName) {
                 case 'playerTurn':
@@ -2313,6 +2315,9 @@ var Quibbles = /** @class */ (function () {
                         cardsThatCanBeAdded.forEach(function (cardThatCanBeAdded) { return _this.addActionButton("addCardToCollection".concat(cardThatCanBeAdded.card_type), _("Add") + " ".concat(_this.getTypeIcon(cardThatCanBeAdded.card_type)), function () { return _this.addCardToCollection(Number(cardThatCanBeAdded.card_type)); }); });
                     }
                     this.addActionButton('endTurn', _("End Turn"), function () { return _this.endTurn(); });
+                    if (cardsThatCanBeAdded.length === 0) {
+                        this.addTimerButton($('endTurn'), 5);
+                    }
                     break;
                 case 'playerTurnPass':
                     this.addActionButton('passConfirm', _("Confirm Card"), function () { return _this.passConfirm(); });
@@ -2326,6 +2331,28 @@ var Quibbles = /** @class */ (function () {
                 this.addActionButton('undoLastMoves', _("Undo last moves"), function () { return _this.undoLastMoves(); }, null, null, 'gray');
             }
         }
+    };
+    Quibbles.prototype.addTimerButton = function (button, duration) {
+        // Reduce the seconds every second, and if we reach 0 click the button
+        var txtButton = button.textContent;
+        button.textContent = txtButton + ' (' + duration + ')';
+        // Reduce the seconds every second, and if we reach 0 click the button
+        clearInterval(this.passInterval);
+        this.passInterval = setInterval(function () {
+            if (dojo.query(button).length == 0) {
+                clearInterval(this.passInterval);
+            }
+            else {
+                duration -= 1;
+                if (duration == -1) {
+                    clearInterval(this.passInterval);
+                    button.click();
+                }
+                else {
+                    button.textContent = txtButton + ' (' + duration + ')';
+                }
+            }
+        }.bind(this), 1000);
     };
     Quibbles.prototype.undoLastMoves = function () {
         this.takeAction('undoLastMoves');
@@ -2350,6 +2377,10 @@ var Quibbles = /** @class */ (function () {
         this.wrapInConfirm(function () { return _this.takeAction("takeConfirm", { selectedSets: JSON.stringify(selectedSets) }); });
     };
     Quibbles.prototype.endTurn = function () {
+        if (this.passInterval) {
+            clearInterval(this.passInterval);
+            this.passInterval = undefined;
+        }
         this.takeAction("endTurn");
     };
     Quibbles.prototype.addCardToCollection = function (type) {
