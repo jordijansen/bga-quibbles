@@ -137,6 +137,11 @@ $gameinfos = array(
     totranslate("The rules are easy to learn and the gameplay quite addictive."),
 ),
 
+'custom_buy_button' => array(
+    'url' => 'https://www.kickstarter.com/projects/michieldewit/quibbles',
+    'label' => 'Kickstarter'
+),
+
 //////// BGA SANDBOX ONLY PARAMETERS (DO NOT MODIFY)
 
 // simple : A plays, B plays, C plays, A plays, B plays, ...

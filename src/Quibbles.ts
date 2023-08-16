@@ -104,11 +104,11 @@ class Quibbles implements QuibblesGame {
             this.cardsManager.setCardsToDiscard(args.cardsToDiscard);
 
             if (args.cardsToDiscard.length === 1) {
-                this.gamedatas.gamestate.descriptionmyturn = this.gamedatas.gamestate.descriptionmyturn + '<br />' + _('Select sets of cards to take that total:') + '&nbsp;' + args.totalDiscardValue + '<br />';
+                this.gamedatas.gamestate.descriptionmyturn = _(this.gamedatas.gamestate.descriptionmyturn) + '<br />' + _('Select sets of cards to take that total:') + '&nbsp;' + args.totalDiscardValue + '<br />';
                 (this as any).updatePageTitle();
                 this.cardsManager.setDisplayCardsSelectableSets('multiple', args.totalDiscardValue);
             } else {
-                this.gamedatas.gamestate.descriptionmyturn = this.gamedatas.gamestate.descriptionmyturn + '<br />' + _('Select cards to take with value:') + '&nbsp;' + args.totalDiscardValue + '<br />';
+                this.gamedatas.gamestate.descriptionmyturn = _(this.gamedatas.gamestate.descriptionmyturn) + '<br />' + _('Select cards to take with value:') + '&nbsp;' + args.totalDiscardValue + '<br />';
                 (this as any).updatePageTitle();
                 this.cardsManager.setDisplayCardsSelectableSingle('single', args.totalDiscardValue);
             }
@@ -121,7 +121,7 @@ class Quibbles implements QuibblesGame {
             if (canAddToCollection.length === 0) {
                 this.gamedatas.gamestate.descriptionmyturn = _("You can't add a card to your collection");
             }
-            this.gamedatas.gamestate.descriptionmyturn += '<br />';
+            this.gamedatas.gamestate.descriptionmyturn = _(this.gamedatas.gamestate.descriptionmyturn) + '<br />';
             (this as any).updatePageTitle();
         }
     }
@@ -189,7 +189,7 @@ class Quibbles implements QuibblesGame {
     public onUpdateActionButtons(stateName: string, args: any) {
         console.log('onUpdateActionButtons: ' + stateName)
 
-        if ((this as any).isCurrentPlayerActive() && !this.isReadOnly()) {
+        if ((this as any).isCurrentPlayerActive()) {
             switch (stateName) {
                 case 'playerTurn':
                     (this as any).addActionButton('playerTurnTake', _("TAKE"), () => (this as any).chooseAction("take"));

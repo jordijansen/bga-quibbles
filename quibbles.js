@@ -2221,12 +2221,12 @@ var Quibbles = /** @class */ (function () {
         if (this.isCurrentPlayerActive()) {
             this.cardsManager.setCardsToDiscard(args.cardsToDiscard);
             if (args.cardsToDiscard.length === 1) {
-                this.gamedatas.gamestate.descriptionmyturn = this.gamedatas.gamestate.descriptionmyturn + '<br />' + _('Select sets of cards to take that total:') + '&nbsp;' + args.totalDiscardValue + '<br />';
+                this.gamedatas.gamestate.descriptionmyturn = _(this.gamedatas.gamestate.descriptionmyturn) + '<br />' + _('Select sets of cards to take that total:') + '&nbsp;' + args.totalDiscardValue + '<br />';
                 this.updatePageTitle();
                 this.cardsManager.setDisplayCardsSelectableSets('multiple', args.totalDiscardValue);
             }
             else {
-                this.gamedatas.gamestate.descriptionmyturn = this.gamedatas.gamestate.descriptionmyturn + '<br />' + _('Select cards to take with value:') + '&nbsp;' + args.totalDiscardValue + '<br />';
+                this.gamedatas.gamestate.descriptionmyturn = _(this.gamedatas.gamestate.descriptionmyturn) + '<br />' + _('Select cards to take with value:') + '&nbsp;' + args.totalDiscardValue + '<br />';
                 this.updatePageTitle();
                 this.cardsManager.setDisplayCardsSelectableSingle('single', args.totalDiscardValue);
             }
@@ -2238,7 +2238,7 @@ var Quibbles = /** @class */ (function () {
             if (canAddToCollection.length === 0) {
                 this.gamedatas.gamestate.descriptionmyturn = _("You can't add a card to your collection");
             }
-            this.gamedatas.gamestate.descriptionmyturn += '<br />';
+            this.gamedatas.gamestate.descriptionmyturn = _(this.gamedatas.gamestate.descriptionmyturn) + '<br />';
             this.updatePageTitle();
         }
     };
@@ -2297,7 +2297,7 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.onUpdateActionButtons = function (stateName, args) {
         var _this = this;
         console.log('onUpdateActionButtons: ' + stateName);
-        if (this.isCurrentPlayerActive() && !this.isReadOnly()) {
+        if (this.isCurrentPlayerActive()) {
             switch (stateName) {
                 case 'playerTurn':
                     this.addActionButton('playerTurnTake', _("TAKE"), function () { return _this.chooseAction("take"); });
