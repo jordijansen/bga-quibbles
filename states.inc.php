@@ -105,8 +105,8 @@ $playerActionsGameStates = [
     ],
     ST_PLAYER_TURN_TAKE_CONFIRM_ID => [
         "name" => ST_PLAYER_TURN_TAKE_CONFIRM,
-        "description" => clienttranslate('TAKE: ${actplayer} must choose card(s) to take from the display'),
-        "descriptionmyturn" => clienttranslate('TAKE: ${you} must choose card(s) to take from the display'),
+        "description" => clienttranslate('TAKE: ${actplayer} must take card(s) from the display'),
+        "descriptionmyturn" => clienttranslate('TAKE: ${you} can take as many cards as you can from the display'),
         "type" => "activeplayer",
         "args" => "argPlayerTurnTakeConfirm",
         "possibleactions" => [
