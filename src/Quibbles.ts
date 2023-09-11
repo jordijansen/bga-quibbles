@@ -268,7 +268,7 @@ class Quibbles implements QuibblesGame {
 
     private takeConfirm() {
         const selectedSets = this.cardsManager.selectedSets;
-        this.wrapInConfirm(() => this.takeAction("takeConfirm", {selectedSets: JSON.stringify(selectedSets)}));
+        this.wrapInConfirm(() => this.takeAction("takeConfirm", {selectedSets: JSON.stringify(selectedSets)}), _('You can take as many cards as you can from the display. This action can not be undone.'));
     }
 
     private endTurn() {
@@ -307,9 +307,9 @@ class Quibbles implements QuibblesGame {
         }
     }
 
-    private wrapInConfirm(runnable: () => void) {
+    private wrapInConfirm(runnable: () => void, message: string = _("This action can not be undone. Are you sure?")) {
         if (this.isAskForConfirmation()) {
-            (this as any).confirmationDialog(_("This action can not be undone. Are you sure?"), () => {
+            (this as any).confirmationDialog(message, () => {
                 runnable();
             });
         } else {

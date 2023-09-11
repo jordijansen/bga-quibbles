@@ -2374,7 +2374,7 @@ var Quibbles = /** @class */ (function () {
     Quibbles.prototype.takeConfirm = function () {
         var _this = this;
         var selectedSets = this.cardsManager.selectedSets;
-        this.wrapInConfirm(function () { return _this.takeAction("takeConfirm", { selectedSets: JSON.stringify(selectedSets) }); });
+        this.wrapInConfirm(function () { return _this.takeAction("takeConfirm", { selectedSets: JSON.stringify(selectedSets) }); }, _('You can take as many cards as you can from the display. This action can not be undone.'));
     };
     Quibbles.prototype.endTurn = function () {
         if (this.passInterval) {
@@ -2411,9 +2411,10 @@ var Quibbles = /** @class */ (function () {
             performAction();
         }
     };
-    Quibbles.prototype.wrapInConfirm = function (runnable) {
+    Quibbles.prototype.wrapInConfirm = function (runnable, message) {
+        if (message === void 0) { message = _("This action can not be undone. Are you sure?"); }
         if (this.isAskForConfirmation()) {
-            this.confirmationDialog(_("This action can not be undone. Are you sure?"), function () {
+            this.confirmationDialog(message, function () {
                 runnable();
             });
         }

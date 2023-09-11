@@ -179,7 +179,7 @@ trait ActionTrait {
 
         if (isset($cardIdToRemove)) {
             $removedCard = $this->cardManager->getCard($cardIdToRemove);
-            self::notifyAllPlayers('cardRemovedFromCollection', '${player_name} removes ${cardSet} from their collection (maximum number of cards in collection is 6)', [
+            self::notifyAllPlayers('cardRemovedFromCollection', clienttranslate('${player_name} removes ${cardSet} from their collection (maximum number of cards in collection is 6)'), [
                 'playerId' => $playerId,
                 'player_name' => $this->getPlayerName($playerId),
                 'cardRemoved' => $removedCard,
