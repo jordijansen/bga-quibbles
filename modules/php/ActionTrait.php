@@ -145,7 +145,7 @@ trait ActionTrait {
                 }
                 $this->cardManager->moveCard($cardToRemove->id, ZONE_DISCARD);
             } else {
-                throw new BgaUserException("You already have 6 cards in your collection, you need to discard a card to add a new one");
+                throw new BgaUserException(clienttranslate("You already have 6 cards in your collection, you need to discard a card to add a new one"));
             }
         }
 
