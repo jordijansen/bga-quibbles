@@ -1827,6 +1827,61 @@ function sortFunction() {
         return 0;
     };
 }
+var determineBoardWidth = function (game) {
+    return 740;
+};
+var determineMaxZoomLevel = function (game) {
+    var bodycoords = dojo.marginBox("zoom-overall");
+    var contentWidth = bodycoords.w;
+    var rowWidth = determineBoardWidth(game);
+    return contentWidth / rowWidth;
+};
+var getZoomLevels = function (maxZoomLevel) {
+    var zoomLevels = [];
+    var increments = 0.05;
+    if (maxZoomLevel > 1) {
+        var maxZoomLevelsAbove1 = maxZoomLevel - 1;
+        increments = (maxZoomLevelsAbove1 / 9);
+        zoomLevels = [];
+        for (var i = 1; i <= 9; i++) {
+            zoomLevels.push((increments * i) + 1);
+        }
+    }
+    for (var i = 1; i <= 9; i++) {
+        zoomLevels.push(1 - (increments * i));
+    }
+    zoomLevels = __spreadArray(__spreadArray([], zoomLevels, true), [1, maxZoomLevel], false);
+    zoomLevels = zoomLevels.sort();
+    zoomLevels = zoomLevels.filter(function (zoomLevel) { return (zoomLevel <= maxZoomLevel) && (zoomLevel > 0.3); });
+    return zoomLevels;
+};
+var AutoZoomManager = /** @class */ (function (_super) {
+    __extends(AutoZoomManager, _super);
+    function AutoZoomManager(game, elementId, localStorageKey) {
+        var storedZoomLevel = localStorage.getItem(localStorageKey);
+        var maxZoomLevel = determineMaxZoomLevel(game);
+        if (storedZoomLevel && Number(storedZoomLevel) > maxZoomLevel) {
+            localStorage.removeItem(localStorageKey);
+        }
+        var zoomLevels = getZoomLevels(determineMaxZoomLevel(game));
+        console.log(zoomLevels);
+        console.log(maxZoomLevel < 1 ? maxZoomLevel : 1);
+        return _super.call(this, {
+            element: document.getElementById(elementId),
+            smooth: false,
+            zoomLevels: zoomLevels,
+            defaultZoom: maxZoomLevel < 1 ? maxZoomLevel : 1,
+            zoomControls: {
+                color: 'black',
+                position: 'top-right',
+            },
+            onDimensionsChange: function () {
+                game.cardsManager.updateLineFitPositionStocks();
+            }
+        }) || this;
+    }
+    return AutoZoomManager;
+}(ZoomManager));
 /**
  * Similar to LineStock except this stock uses the available space to lay out the elements and overlap them if there is not enough space guaranteeing a single line of elements.
  */
@@ -2150,6 +2205,8 @@ var LOCAL_STORAGE_ZOOM_KEY = 'Quibbles-zoom';
 var Quibbles = /** @class */ (function () {
     function Quibbles() {
         this.passInterval = undefined;
+        // @ts-ignore
+        this.default_viewport = 'width=740';
     }
     /*
         setup:
@@ -2164,21 +2221,10 @@ var Quibbles = /** @class */ (function () {
         "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
     */
     Quibbles.prototype.setup = function (gamedatas) {
-        var _this = this;
         log("Starting game setup");
         this.cardsManager = new CardsManager(this);
         this.playerManager = new PlayerManager(this);
-        this.zoomManager = new ZoomManager({
-            element: document.getElementById('quibbles-table'),
-            smooth: true,
-            zoomControls: {
-                color: 'black',
-            },
-            localStorageZoomKey: LOCAL_STORAGE_ZOOM_KEY,
-            onDimensionsChange: function () {
-                _this.cardsManager.updateLineFitPositionStocks();
-            },
-        });
+        this.zoomManager = new AutoZoomManager(this, 'quibbles-table', LOCAL_STORAGE_ZOOM_KEY);
         log('gamedatas', gamedatas);
         this.gamedatas = gamedatas;
         this.playerManager.setUp(gamedatas);

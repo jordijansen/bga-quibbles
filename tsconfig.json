@@ -33,6 +33,8 @@
     "node_modules/bga-cards/src/card-manager.ts",
     "node_modules/bga-cards/src/sort.ts",
 
+    "src/bga/AutoZoomManager.ts",
+
     "src/LineFitPositionStock.ts",
     "src/CardsManager.ts",
     "src/PlayerManager.ts",

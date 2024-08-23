@@ -167,6 +167,11 @@ $quibbles-color-purple: #7d347f;
 
 }
 
+#page-content,
+#right-side-first-part {
+    zoom: 1 !important;
+}
+
 html, .mode_3d #game_play_area_background {
     background: $quibbles-color-roze;
     .whiteblock {

@@ -46,8 +46,7 @@
     </div>
 </div>
 
-
-
+<div id="zoom-overall" style="width: 100%;"></div>
 
 <script type="text/javascript">
 

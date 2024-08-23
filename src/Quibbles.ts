@@ -15,13 +15,14 @@ class Quibbles implements QuibblesGame {
 
     instantaneousMode: boolean;
     private gamedatas: QuibblesGameData;
-    private cardsManager: CardsManager;
+    cardsManager: CardsManager;
     private playerManager: PlayerManager
     private zoomManager: ZoomManager;
     private passInterval = undefined;
 
     constructor() {
-
+        // @ts-ignore
+        this.default_viewport = 'width=740';
     }
 
     /*
@@ -42,17 +43,7 @@ class Quibbles implements QuibblesGame {
 
         this.cardsManager = new CardsManager(this);
         this.playerManager = new PlayerManager(this);
-        this.zoomManager = new ZoomManager({
-            element: document.getElementById('quibbles-table'),
-            smooth: true,
-            zoomControls: {
-                color: 'black',
-            },
-            localStorageZoomKey: LOCAL_STORAGE_ZOOM_KEY,
-            onDimensionsChange: () => {
-                this.cardsManager.updateLineFitPositionStocks();
-            },
-        });
+        this.zoomManager = new AutoZoomManager(this, 'quibbles-table', LOCAL_STORAGE_ZOOM_KEY);
 
         log('gamedatas', gamedatas);
 
